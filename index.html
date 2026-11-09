@@ -424,7 +424,7 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 tracking-tight">房客檔案與通路標記</h2>
-                        <p class="text-sm text-slate-500 mt-1">記錄常客喜好、聯絡資訊與訂房來源通路</p>
+                        <p class="text-sm text-slate-500 mt-1">記錄常客喜好、聯絡資訊與 VIP / 奧客標籤設定</p>
                     </div>
                     <button onclick="openGuestModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition-all">
                         <i class="fa-solid fa-user-plus mr-1.5"></i>新增房客資料
@@ -444,6 +444,7 @@
                                     <th class="p-4">聯絡電話</th>
                                     <th class="p-4">常住通路</th>
                                     <th class="p-4">車牌號碼</th>
+                                    <th class="p-4">標籤設定 (VIP / 奧客)</th>
                                     <th class="p-4">備註/喜好</th>
                                     <th class="p-4 text-right">操作</th>
                                 </tr>
@@ -634,8 +635,9 @@
         }
 
         let guestsData = [
-            { id: 1, name: '林小明', phone: '0912-345678', channel: 'Booking.com', car: 'ABC-1234', note: '喜歡高樓層安靜房間' },
-            { id: 2, name: '張雅婷', phone: '0922-888999', channel: 'Agoda', car: 'XYZ-9876', note: '帶寵物入住' }
+            { id: 1, name: '林小明', phone: '0912-345678', channel: 'Booking.com', car: 'ABC-1234', tag: 'VIP', note: '喜歡高樓層安靜房間' },
+            { id: 2, name: '張雅婷', phone: '0922-888999', channel: 'Agoda', car: 'XYZ-9876', tag: '一般', note: '帶寵物入住' },
+            { id: 3, name: '王大同', phone: '0933-123456', channel: 'Line 官網直訂', car: 'DEF-5678', tag: '奧客', note: '曾於深夜大聲喧嘩需注意' }
         ];
 
         let todayStr = new Date().toISOString().split('T')[0];
@@ -646,7 +648,16 @@
         if(localStorage.getItem('homestay_name')) homestayName = localStorage.getItem('homestay_name');
         if(localStorage.getItem('homestay_rooms')) roomsData = JSON.parse(localStorage.getItem('homestay_rooms'));
         if(localStorage.getItem('homestay_parking')) parkingData = JSON.parse(localStorage.getItem('homestay_parking'));
-        if(localStorage.getItem('homestay_guests')) guestsData = JSON.parse(localStorage.getItem('homestay_guests'));
+        if(localStorage.getItem('homestay_guests')) {
+            guestsData = JSON.parse(localStorage.getItem('homestay_guests'));
+            if(guestsData.length === 0) {
+                guestsData = [
+                    { id: 1, name: '林小明', phone: '0912-345678', channel: 'Booking.com', car: 'ABC-1234', tag: 'VIP', note: '喜歡高樓層安靜房間' },
+                    { id: 2, name: '張雅婷', phone: '0922-888999', channel: 'Agoda', car: 'XYZ-9876', tag: '一般', note: '帶寵物入住' },
+                    { id: 3, name: '王大同', phone: '0933-123456', channel: 'Line 官網直訂', car: 'DEF-5678', tag: '奧客', note: '曾於深夜大聲喧嘩需注意' }
+                ];
+            }
+        }
         if(localStorage.getItem('homestay_orders')) ordersData = JSON.parse(localStorage.getItem('homestay_orders'));
 
         function saveData() {
@@ -1032,12 +1043,22 @@
             document.getElementById('guest-total-count').innerText = `共 ${filtered.length} 位房客`;
 
             filtered.forEach(g => {
+                let currentTag = g.tag || '一般';
+                let tagBadgeClass = currentTag === 'VIP' ? 'bg-amber-100 text-amber-800' : (currentTag === '奧客' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700');
+                
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-4 font-semibold text-slate-900">${g.name}</td>
                         <td class="p-4 text-slate-600 font-mono text-xs">${g.phone}</td>
                         <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${g.channel}</span></td>
                         <td class="p-4 font-mono text-xs text-slate-700">${g.car || '無'}</td>
+                        <td class="p-4">
+                            <select onchange="updateGuestTag(${g.id}, this.value)" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 ${tagBadgeClass}">
+                                <option value="一般" ${currentTag==='一般'?'selected':''}>一般房客</option>
+                                <option value="VIP" ${currentTag==='VIP'?'selected':''}>⭐ VIP 貴賓</option>
+                                <option value="奧客" ${currentTag==='奧客'?'selected':''}>⚠️ 奧客/黑名單</option>
+                            </select>
+                        </td>
                         <td class="p-4 text-slate-500 text-xs">${g.note || '無'}</td>
                         <td class="p-4 text-right"><button onclick="deleteGuest(${g.id})" class="text-rose-600 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button></td>
                     </tr>
@@ -1045,11 +1066,21 @@
             });
         }
 
+        function updateGuestTag(id, newTag) {
+            let g = guestsData.find(x => x.id === id);
+            if(g) {
+                g.tag = newTag;
+                saveData();
+                renderGuests();
+                showToast('房客標籤已更新！');
+            }
+        }
+
         function openGuestModal() {
             let name = prompt("請輸入房客姓名：");
             if(!name) return;
             let phone = prompt("請輸入電話：", "09");
-            guestsData.push({ id: Date.now(), name, phone: phone||'', channel: 'Booking.com', car: '', note: '' });
+            guestsData.push({ id: Date.now(), name, phone: phone||'', channel: 'Booking.com', car: '', tag: '一般', note: '' });
             saveData(); renderGuests();
             showToast('房客新增成功！');
         }
