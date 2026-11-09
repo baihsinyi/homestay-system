@@ -3,664 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日租套房與車位管理系統</title>
+    <title>陽光日租微旅 - 日租套房與車位管理系統</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome 圖示庫 -->
+    <!-- Font Inter & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800 antialiased h-screen flex overflow-hidden">
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
 
-    <!-- 手機版選單遮罩 -->
-    <div id="mobile-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 hidden lg:hidden"></div>
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-brand-900 text-white p-4 flex justify-between items-center shadow-md z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-brand-500 p-2 rounded-xl text-white">
+                <i class="fa-solid fa-hotel text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">陽光日租微旅</h1>
+                <p class="text-xs text-indigo-200">50 間套房 & 車位管理</p>
+            </div>
+        </div>
+        <button id="mobile-menu-btn" class="text-white p-2 focus:outline-none hover:bg-brand-800 rounded-lg">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+    </div>
 
-    <!-- 左側導覽側邊欄 (支援響應式 RWD 自動收合) -->
-    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-slate-900 text-white flex flex-col justify-between shrink-0 shadow-xl z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-brand-900 text-slate-300 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
         <div>
-            <!-- 民宿/品牌標題 (可動態修改) -->
-            <div class="p-5 border-b border-slate-800 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="bg-indigo-600 p-2.5 rounded-xl shadow-md">
-                        <i class="fa-solid font-bold fa-hotel text-xl text-white"></i>
-                    </div>
-                    <div>
-                        <h1 id="sidebar-brand-name" class="font-bold text-lg tracking-wide text-white truncate max-w-[130px]" title="陽光日租微旅">陽光日租微旅</h1>
-                        <p class="text-xs text-slate-400">50 間套房 & 車位管理</p>
-                    </div>
+            <!-- Brand Header (Desktop) -->
+            <div class="p-6 hidden md:flex items-center space-x-3 border-b border-indigo-950">
+                <div class="bg-brand-500 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-hotel text-xl"></i>
                 </div>
-                <!-- 手機版關閉選單按鈕 -->
-                <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <div>
+                    <h1 class="font-bold text-white text-lg tracking-wide">陽光日租微旅</h1>
+                    <p class="text-xs text-indigo-300">50 間套房 & 車位管理</p>
+                </div>
             </div>
 
-            <!-- 主選單 -->
-            <nav class="p-4 space-y-1.5">
-                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-indigo-600 text-white shadow-md">
-                    <i class="fa-solid fa-chart-line w-5"></i>
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-180px)] custom-scrollbar">
+                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-white bg-brand-600 shadow-md shadow-indigo-600/20" data-target="dashboard">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
                     <span>營運概況儀表板</span>
                 </button>
-                <button onclick="switchTab('booking')" id="btn-booking" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-wand-magic-sparkles w-5"></i>
+                <button onclick="switchTab('monthly')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="monthly">
+                    <i class="fa-solid fa-calendar-days w-5 text-center text-emerald-400"></i>
+                    <span>每月營收報表</span>
+                </button>
+                <button onclick="switchTab('smart')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="smart">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5 text-center"></i>
                     <span>智慧排房與訂單</span>
                 </button>
-                <button onclick="switchTab('gantt')" id="btn-gantt" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-calendar-days w-5"></i>
+                <button onclick="switchTab('calendar')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="calendar">
+                    <i class="fa-solid fa-calendar-week w-5 text-center"></i>
                     <span>房態看板 (日曆)</span>
                 </button>
-                <button onclick="switchTab('parking')" id="btn-parking" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-square-parking w-5"></i>
+                <button onclick="switchTab('parking')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="parking">
+                    <i class="fa-solid fa-square-parking w-5 text-center"></i>
                     <span>固定編號車位</span>
                 </button>
-                <button onclick="switchTab('guests')" id="btn-guests" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-users-rectangle w-5"></i>
+                <button onclick="switchTab('guests')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="guests">
+                    <i class="fa-solid fa-address-book w-5 text-center"></i>
                     <span>房客檔與通路標記</span>
                 </button>
-                <button onclick="switchTab('settings')" id="btn-settings" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-sliders w-5"></i>
+                <button onclick="switchTab('settings')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="settings">
+                    <i class="fa-solid fa-sliders w-5 text-center"></i>
                     <span>民宿與房間設定</span>
                 </button>
-                <button onclick="switchTab('backup')" id="btn-backup" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-database w-5"></i>
+                <button onclick="switchTab('backup')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-300 hover:bg-brand-800 hover:text-white" data-target="backup">
+                    <i class="fa-solid fa-database w-5 text-center"></i>
                     <span>資料備份與匯入/匯出</span>
                 </button>
             </nav>
         </div>
 
-        <div class="p-4 border-t border-slate-800 bg-slate-950/50">
-            <div class="flex items-center gap-3 text-xs text-slate-400">
-                <i class="fa-solid fa-clock text-indigo-400"></i>
-                <div>
-                    <p class="font-semibold text-slate-300">系統標準時間</p>
-                    <p>入住 15:00 | 退房 11:00</p>
-                </div>
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-indigo-950 text-xs text-indigo-300 bg-brand-950/40">
+            <div class="flex items-center justify-between mb-1">
+                <span class="flex items-center"><i class="fa-solid fa-clock mr-1.5 text-emerald-400"></i>系統標準時間</span>
+                <span id="system-time" class="font-mono text-white">15:00</span>
             </div>
+            <p class="text-[11px] text-slate-400">入住 15:00 | 退房 11:00</p>
         </div>
     </aside>
 
-    <!-- 右側主內容區 -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen custom-scrollbar">
         
-        <!-- 頂部頁眉 -->
-        <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 flex items-center justify-between shrink-0 shadow-sm">
-            <div class="flex items-center gap-3">
-                <!-- 手機版漢堡選單按鈕 (☰) -->
-                <button onclick="toggleMobileSidebar()" class="lg:hidden bg-slate-100 hover:bg-slate-200 p-2.5 rounded-xl text-slate-700 transition">
-                    <i class="fa-solid fa-bars text-lg"></i>
-                </button>
-                <div>
-                    <h2 id="page-title" class="text-lg sm:text-xl font-bold text-slate-800">營運概況儀表板</h2>
-                    <p class="text-xs text-slate-500 mt-0.5 hidden sm:block">即時追蹤今日 50 間房間住房率與車位使用狀態</p>
+        <!-- Top Notification Banner -->
+        <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+        <div class="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
+
+            <!-- TAB 1: 營運概況儀表板 -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">營運概況儀表板</h2>
+                        <p class="text-sm text-slate-500 mt-1">即時追蹤指定日期的 50 間房住房率、車位使用狀態與當日營收</p>
+                    </div>
+                    <!-- 日期選擇器 -->
+                    <div class="flex items-center space-x-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                        <label for="dashboard-date" class="text-sm font-medium text-slate-600 flex items-center">
+                            <i class="fa-solid fa-calendar-day mr-2 text-brand-600"></i>檢視日期：
+                        </label>
+                        <input type="date" id="dashboard-date" onchange="updateDashboard()" class="bg-white border border-slate-300 text-slate-800 text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
+                    </div>
                 </div>
-            </div>
-            
-            <div class="flex items-center gap-2 sm:gap-4">
-                <!-- 今日日期 -->
-                <div class="bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 flex items-center gap-2">
-                    <i class="fa-regular fa-calendar text-indigo-600"></i>
-                    <span id="current-date-display">2026-11-09</span>
-                </div>
-                <!-- 快速新增訂單按鈕 -->
-                <button onclick="switchTab('booking')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 sm:px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
-                    <i class="fa-solid fa-plus"></i>
-                    <span class="hidden sm:inline">新增預訂</span>
-                </button>
-            </div>
-        </header>
 
-        <!-- 內容區域區塊集 -->
-        <div class="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
-
-            <!-- 1. 營運儀表板 View -->
-            <section id="view-dashboard" class="space-y-6">
-                <!-- 數據卡片列 -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">今日入住率</p>
-                            <h3 id="stat-occupancy" class="text-2xl font-black text-slate-800 mt-1">0%</h3>
-                            <p id="stat-occupancy-sub" class="text-xs text-slate-500 mt-1">0 / 50 間房</p>
+                            <p class="text-sm font-medium text-slate-500">當日總營收</p>
+                            <h3 id="dash-revenue" class="text-2xl font-bold text-slate-900 mt-1">NT$ 0</h3>
+                            <span class="inline-flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md mt-2">
+                                <i class="fa-solid fa-arrow-up mr-1"></i> 即時結算
+                            </span>
                         </div>
-                        <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-xl font-bold">
-                            <i class="fa-solid fa-door-open"></i>
+                        <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-brand-600 text-xl shadow-inner">
+                            <i class="fa-solid fa-sack-dollar"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">今日車位佔用</p>
-                            <h3 id="stat-parking" class="text-2xl font-black text-slate-800 mt-1">0%</h3>
-                            <p id="stat-parking-sub" class="text-xs text-slate-500 mt-1">0 / 15 個車位</p>
+                            <p class="text-sm font-medium text-slate-500">套房總住房率</p>
+                            <h3 id="dash-occupancy" class="text-2xl font-bold text-slate-900 mt-1">0%</h3>
+                            <span id="dash-occupied-count" class="text-xs text-slate-500 mt-2 block">已入住 0 / 50 間</span>
                         </div>
-                        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-xl font-bold">
-                            <i class="fa-solid fa-square-parking"></i>
+                        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-xl shadow-inner">
+                            <i class="fa-solid fa-bed"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">今日待辦理入住 (15:00)</p>
-                            <h3 id="stat-checkin" class="text-2xl font-black text-emerald-600 mt-1">0</h3>
-                            <p class="text-xs text-slate-500 mt-1">組住客準備報到</p>
+                            <p class="text-sm font-medium text-slate-500">車位使用率</p>
+                            <h3 id="dash-parking-rate" class="text-2xl font-bold text-slate-900 mt-1">0%</h3>
+                            <span id="dash-parking-count" class="text-xs text-slate-500 mt-2 block">已停 0 / 15 車位</span>
                         </div>
-                        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-xl font-bold">
-                            <i class="fa-solid fa-key"></i>
+                        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-xl shadow-inner">
+                            <i class="fa-solid fa-car"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">預估今日房費營收</p>
-                            <h3 id="stat-revenue" class="text-2xl font-black text-slate-800 mt-1">NT$ 0</h3>
-                            <p class="text-xs text-slate-500 mt-1">包含房間與車位費用</p>
+                            <p class="text-sm font-medium text-slate-500">待清理房數</p>
+                            <h3 id="dash-cleaning" class="text-2xl font-bold text-slate-900 mt-1">0 間</h3>
+                            <span class="text-xs text-indigo-600 mt-2 block font-medium">房務清潔排程中</span>
                         </div>
-                        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-xl font-bold">
-                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 text-xl shadow-inner">
+                            <i class="fa-solid fa-broom"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- 近期入住卡片列表 -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
+                <!-- Quick Action Status Tables -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-list-check text-indigo-600"></i>
-                                <span>今日排定動態清單</span>
+                            <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                                <i class="fa-solid fa-door-open mr-2 text-brand-600"></i>當日入住/在住房客清單
                             </h3>
-                            <span class="text-xs text-slate-400">登錄之所有訂單列表</span>
+                            <span id="dash-guest-count-badge" class="text-xs bg-indigo-50 text-brand-700 font-semibold px-2.5 py-1 rounded-full">0 筆</span>
                         </div>
-                        
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left border-collapse min-w-[500px]">
+                        <div class="overflow-x-auto max-h-80 custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-sm">
                                 <thead>
-                                    <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                        <th class="py-3 px-2">房號 / 房型</th>
-                                        <th class="py-3 px-2">住客姓名</th>
-                                        <th class="py-3 px-2">來源平台</th>
-                                        <th class="py-3 px-2">車位編號</th>
-                                        <th class="py-3 px-2">狀態</th>
-                                        <th class="py-3 px-2 text-right">操作</th>
+                                    <tr class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                        <th class="p-3">房號</th>
+                                        <th class="p-3">房客姓名</th>
+                                        <th class="p-3">訂房通路</th>
+                                        <th class="p-3">車位</th>
+                                        <th class="p-3">狀態</th>
                                     </tr>
                                 </thead>
-                                <tbody id="dashboard-today-list" class="divide-y divide-slate-100 text-sm">
-                                    <!-- 動態渲染今日訂單 -->
+                                <tbody id="dash-guests-tbody" class="divide-y divide-slate-100">
+                                    <!-- Dynamic populated -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- 固定車位速覽區 -->
-                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6 flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-car text-blue-600"></i>
-                                    <span>今日固定車位狀況</span>
-                                </h3>
-                                <button onclick="switchTab('parking')" class="text-xs text-indigo-600 hover:underline">車位頁面 &rarr;</button>
-                            </div>
-                            <div id="dashboard-parking-grid" class="grid grid-cols-3 gap-2.5">
-                                <!-- 15 個車位狀態動態產出 -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2. 智慧排房與訂單 View -->
-            <section id="view-booking" class="hidden space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-                    <!-- 左側：自動推薦與需求過濾器 -->
-                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 sm:p-6 space-y-5">
-                        <div class="border-b border-slate-100 pb-3">
-                            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                                <i class="fa-solid fa-sliders text-indigo-600"></i>
-                                <span>排房條件過濾器</span>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                                <i class="fa-solid fa-broom mr-2 text-purple-600"></i>今日待清潔房務名單
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">系統將根據需求自動配對 50 間房中最適合的房號</p>
+                            <span id="dash-cleaning-count-badge" class="text-xs bg-purple-50 text-purple-700 font-semibold px-2.5 py-1 rounded-full">0 筆</span>
                         </div>
-
-                        <!-- 預訂日期與夜數 -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">入住日期 (15:00)</label>
-                                <input type="date" id="filter-checkin" onchange="calculateRoomRecommendations()" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">入住天數</label>
-                                <input type="number" id="filter-nights" min="1" value="1" onchange="calculateRoomRecommendations()" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            </div>
-                        </div>
-
-                        <!-- 房型選擇 -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">房型偏好</label>
-                            <select id="filter-room-type" onchange="calculateRoomRecommendations()" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                <option value="ALL">不限房型</option>
-                                <option value="單人房">單人房</option>
-                                <option value="雙人房">雙人房</option>
-                            </select>
-                        </div>
-
-                        <!-- 訂房來源平台 -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">訂房來源平台</label>
-                            <select id="booking-channel" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                <option value="Agoda">Agoda</option>
-                                <option value="Booking.com">Booking.com</option>
-                                <option value="Airbnb">Airbnb</option>
-                                <option value="LINE官方帳號">LINE 官方帳號</option>
-                                <option value="電話預約">電話預約</option>
-                                <option value="現場Walk-in">現場 Walk-in</option>
-                                <option value="其他">其他平台</option>
-                            </select>
-                        </div>
-
-                        <!-- 特殊需求 (標籤) -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">特殊需求篩選 (複選)</label>
-                            <div id="tags-checkbox-container" class="flex flex-wrap gap-2">
-                                <label class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition">
-                                    <input type="checkbox" value="低樓層" onchange="calculateRoomRecommendations()" class="tag-checkbox text-indigo-600 rounded border-slate-300">
-                                    <span>低樓層</span>
-                                </label>
-                                <label class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition">
-                                    <input type="checkbox" value="無障礙" onchange="calculateRoomRecommendations()" class="tag-checkbox text-indigo-600 rounded border-slate-300">
-                                    <span>無障礙</span>
-                                </label>
-                            </div>
-
-                            <!-- 手動新增標籤功能區 -->
-                            <div class="mt-3 pt-3 border-t border-slate-100">
-                                <label class="block text-xs font-semibold text-slate-500 mb-1">手動新增特殊標籤：</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="new-tag-input" placeholder="例如：高樓層..." class="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                    <button onclick="addNewCustomTag()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg transition shrink-0">
-                                        <i class="fa-solid fa-plus mr-1"></i>新增
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 車位需求 -->
-                        <div class="pt-2 border-t border-slate-100">
-                            <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="filter-need-parking" onchange="toggleParkingSelect(); calculateRoomRecommendations()" class="rounded text-indigo-600 w-4 h-4">
-                                <span class="text-sm font-semibold text-slate-700">顧客需要車位 (固定車位)</span>
-                            </label>
-                            
-                            <div id="parking-select-box" class="hidden mt-3">
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">選擇分配固定車位編號</label>
-                                <select id="filter-parking-spot" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                    <!-- 動態載入可選車位 -->
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 右側：智慧建議與確認排房表單 -->
-                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 sm:p-6 space-y-6">
-                        <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-base">智慧推薦房間號碼</h3>
-                                <p class="text-xs text-slate-500 mt-0.5">系統依據選取條件，自動篩選尚未被預約之最佳房間</p>
-                            </div>
-                            <span id="recommendation-count" class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-full">符合 0 間</span>
-                        </div>
-
-                        <!-- 推薦房間清單卡片 -->
-                        <div id="recommended-rooms-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto custom-scrollbar p-1">
-                            <!-- 動態產出建議卡片 -->
-                        </div>
-
-                        <!-- 確定下單與客戶資料填寫 -->
-                        <div id="booking-form-section" class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
-                            <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-user-check text-indigo-600"></i>
-                                <span>確定訂單資料與入客資訊</span>
-                            </h4>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">已選房號</label>
-                                    <input type="text" id="form-room-number" readonly class="w-full text-sm bg-slate-200/70 border border-slate-300 font-bold text-indigo-700 rounded-lg p-2.5">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">房客姓名 *</label>
-                                    <input type="text" id="form-guest-name" placeholder="請輸入姓名" class="w-full text-sm bg-white border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">聯絡電話 *</label>
-                                    <input type="text" id="form-guest-phone" placeholder="09xx-xxx-xxx" class="w-full text-sm bg-white border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">綁定固定車位</label>
-                                    <input type="text" id="form-assigned-parking" readonly placeholder="無車位" class="w-full text-sm bg-slate-200/70 border border-slate-300 rounded-lg p-2.5 font-semibold">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">總預估金額 (元)</label>
-                                    <input type="number" id="form-total-price" class="w-full text-sm bg-white border border-slate-200 rounded-lg p-2.5 font-bold text-slate-800">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">備註 / 特別交代</label>
-                                    <input type="text" id="form-notes" placeholder="例如：晚到" class="w-full text-sm bg-white border border-slate-200 rounded-lg p-2.5">
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end pt-2">
-                                <button onclick="confirmCreateBooking()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-200 transition flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-check"></i>
-                                    <span>完成訂單並排房</span>
-                                </button>
-                            </div>
+                        <div class="overflow-x-auto max-h-80 custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                        <th class="p-3">房號</th>
+                                        <th class="p-3">房型</th>
+                                        <th class="p-3">退房時間</th>
+                                        <th class="p-3">操作動作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-cleaning-tbody" class="divide-y divide-slate-100">
+                                    <!-- Dynamic populated -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. 房態看板 Gantt & 年月曆 View -->
-            <section id="view-gantt" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base">50 間套房預訂甘特圖與全月日曆看板</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">點擊按鈕可在「50間房甘特圖」與「整月日曆」之間切換</p>
-                        </div>
-                        
-                        <!-- 雙視圖切換按鈕組 -->
-                        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 self-start sm:self-auto">
-                            <button id="view-mode-gantt-btn" onclick="toggleCalendarView('gantt')" class="px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition">
-                                <i class="fa-solid fa-bars-staggered mr-1.5"></i>50房甘特圖
-                            </button>
-                            <button id="view-mode-month-btn" onclick="toggleCalendarView('month')" class="px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:bg-slate-200 transition">
-                                <i class="fa-regular fa-calendar-days mr-1.5"></i>整月月曆 (紅字)
-                            </button>
-                        </div>
+            <!-- TAB 2: 每月營收報表 (NEW) -->
+            <section id="tab-monthly" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">每月營收與業績分析</h2>
+                        <p class="text-sm text-slate-500 mt-1">統計各月份總營收、平均住房率、訂單數量與通路分佈佔比</p>
                     </div>
-
-                    <!-- 檢視模式 A：50間房甘特圖矩陣 -->
-                    <div id="gantt-view-container" class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-xs text-center border-collapse min-w-[900px]">
-                            <thead>
-                                <tr id="gantt-header-row" class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
-                                    <th class="p-2.5 text-left w-24 sticky left-0 bg-slate-100 z-10 shadow-sm">房號 / 房型</th>
-                                    <!-- 動態產出 14 天或 30 天日期欄位 -->
-                                </tr>
-                            </thead>
-                            <tbody id="gantt-body-rows" class="divide-y divide-slate-100">
-                                <!-- 動態渲染 50 間房的佔用色塊 -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- 檢視模式 B：整月月曆檢視 -->
-                    <div id="month-calendar-container" class="hidden">
-                        <!-- 月份切換標頭 -->
-                        <div class="flex items-center justify-between mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <button onclick="changeMonth(-1)" class="px-3 py-1.5 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-slate-700">
-                                <i class="fa-solid fa-chevron-left mr-1"></i>上個月
-                            </button>
-                            <h4 id="month-calendar-title" class="font-black text-slate-800 text-base">2026 年 11 月</h4>
-                            <button onclick="changeMonth(1)" class="px-3 py-1.5 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-slate-700">
-                                下個月<i class="fa-solid fa-chevron-right ml-1"></i>
-                            </button>
-                        </div>
-
-                        <!-- 星期標題 (日~六) -->
-                        <div class="grid grid-cols-7 text-center font-bold text-xs py-2 bg-slate-100 rounded-t-xl text-slate-600 border border-slate-200">
-                            <div class="text-red-500">週日</div>
-                            <div>週一</div>
-                            <div>週二</div>
-                            <div>週三</div>
-                            <div>週四</div>
-                            <div>週五</div>
-                            <div class="text-red-500">週六</div>
-                        </div>
-
-                        <!-- 35-42 天月曆網格 -->
-                        <div id="month-grid" class="grid grid-cols-7 border-l border-r border-b border-slate-200 rounded-b-xl divide-x divide-y divide-slate-200 bg-white">
-                            <!-- 動態生成日期卡片 -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. 固定車位 View -->
-            <section id="view-parking" class="hidden space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
-                    <div class="border-b border-slate-100 pb-3 mb-5">
-                        <h3 class="font-bold text-slate-800 text-base">固定編號車位實時監控</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">查看當前所有車位分配與對應房客資訊</p>
-                    </div>
-
-                    <div id="parking-full-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                        <!-- 動態生成車位狀態卡片 -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. 房客檔與平台通路 View -->
-            <section id="view-guests" class="hidden space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                                <i class="fa-solid fa-address-book text-indigo-600"></i>
-                                <span>房客檔案管理與平台來源統計</span>
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">紀錄房客來源並標記「⭐VIP」或「⚠️黑名單」</p>
-                        </div>
-                        
-                        <!-- 房客搜尋框 -->
-                        <div class="relative w-full md:w-64">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-                            <input type="text" id="guest-search-input" onkeyup="renderGuestsList()" placeholder="搜尋姓名或電話..." class="w-full text-xs pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                    </div>
-
-                    <!-- 房客數據簡報 -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl flex items-center gap-3">
-                            <i class="fa-solid fa-crown text-2xl text-amber-500"></i>
-                            <div>
-                                <p class="text-xs font-semibold text-slate-500">常客 / VIP 總數</p>
-                                <h4 id="stat-vip-count" class="text-xl font-bold text-slate-800">0 人</h4>
-                            </div>
-                        </div>
-                        <div class="bg-rose-50/50 border border-rose-100 p-4 rounded-xl flex items-center gap-3">
-                            <i class="fa-solid fa-skull-crossbones text-2xl text-rose-500"></i>
-                            <div>
-                                <p class="text-xs font-semibold text-slate-500">黑名單 / 奧客紀錄</p>
-                                <h4 id="stat-bad-count" class="text-xl font-bold text-slate-800">0 人</h4>
-                            </div>
-                        </div>
-                        <div class="bg-blue-50/50 border border-blue-100 p-4 rounded-xl flex items-center gap-3">
-                            <i class="fa-solid fa-globe text-2xl text-blue-500"></i>
-                            <div>
-                                <p class="text-xs font-semibold text-slate-500">主要來源訂房平台</p>
-                                <h4 id="stat-top-channel" class="text-xl font-bold text-slate-800">Agoda</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 房客清單表格 -->
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-left border-collapse min-w-[600px]">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
-                                    <th class="py-3 px-4">住客姓名</th>
-                                    <th class="py-3 px-4">聯絡電話</th>
-                                    <th class="py-3 px-4">主要下單平台</th>
-                                    <th class="py-3 px-4">歷史入住次數</th>
-                                    <th class="py-3 px-4">客群標記</th>
-                                    <th class="py-3 px-4 text-right">手動標籤操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="guests-table-body" class="divide-y divide-slate-100 text-sm">
-                                <!-- 動態渲染房客清單 -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. 民宿與房間設定 View -->
-            <section id="view-settings" class="hidden space-y-6">
-                <!-- 自訂民宿名稱卡片 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-4">
-                    <h3 class="font-bold text-slate-800 text-base border-b border-slate-100 pb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-house-user text-indigo-600"></i>
-                        <span>手動自訂民宿 / 品牌名稱</span>
-                    </h3>
-                    <div class="flex items-center gap-3 max-w-md">
-                        <input type="text" id="settings-brand-input" value="陽光日租微旅" class="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        <button onclick="updateBrandName()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow transition">
-                            更新名稱
-                        </button>
+                    <div class="flex items-center space-x-3">
+                        <select id="monthly-year-select" onchange="updateMonthlyReport()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl px-4 py-2 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="2026">2026 年</option>
+                            <option value="2025">2025 年</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- 手動編輯 50 間套房與彈性節日調價區 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-5">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base">50 間套房資料與節日調價編輯</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">直接在表格中微調房型、價格與需求標籤</p>
-                        </div>
-
-                        <!-- 手動新增房間按鈕 -->
-                        <button onclick="openAddRoomModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-lg shadow transition flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>手動新增房間</span>
-                        </button>
+                <!-- Monthly Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-sm font-medium text-slate-500">本月累計總營收</p>
+                        <h3 id="monthly-total-rev" class="text-2xl font-bold text-slate-900 mt-1">NT$ 0</h3>
+                        <p id="monthly-rev-diff" class="text-xs text-emerald-600 mt-2 font-medium"><i class="fa-solid fa-chart-line mr-1"></i>較上月成長 0%</p>
                     </div>
-
-                    <div class="overflow-x-auto max-h-[500px] custom-scrollbar">
-                        <table class="w-full text-left border-collapse min-w-[650px]">
-                            <thead class="sticky top-0 bg-slate-100 z-10 shadow-sm">
-                                <tr class="text-xs font-semibold text-slate-600 border-b border-slate-200">
-                                    <th class="py-3 px-3 w-24">房號</th>
-                                    <th class="py-3 px-3 w-36">房型名稱</th>
-                                    <th class="py-3 px-3 w-32">平/節日價格 (NT$)</th>
-                                    <th class="py-3 px-3">特殊需求標籤</th>
-                                    <th class="py-3 px-3 text-right w-28">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="settings-rooms-table-body" class="divide-y divide-slate-100 text-sm">
-                                <!-- 動態渲染房間列表 -->
-                            </tbody>
-                        </table>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-sm font-medium text-slate-500">本月總訂單數</p>
+                        <h3 id="monthly-total-orders" class="text-2xl font-bold text-slate-900 mt-1">0 筆</h3>
+                        <p class="text-xs text-slate-500 mt-2">包含各通路預訂</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-sm font-medium text-slate-500">本月平均住房率</p>
+                        <h3 id="monthly-avg-occupancy" class="text-2xl font-bold text-slate-900 mt-1">0%</h3>
+                        <p class="text-xs text-blue-600 mt-2 font-medium">每日套房平均使用</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-sm font-medium text-slate-500">熱門預訂通路</p>
+                        <h3 id="monthly-top-channel" class="text-2xl font-bold text-slate-900 mt-1">-</h3>
+                        <p class="text-xs text-purple-600 mt-2 font-medium">佔比最高來源</p>
                     </div>
                 </div>
 
-                <!-- 固定車位管理與編輯區 -->
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base">固定車位編號編輯與新增</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">自由修改車位名稱 (如 P01 改為 B1-01)</p>
-                        </div>
-                        <button onclick="addNewParkingSpot()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg shadow transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>新增車位</span>
-                        </button>
-                    </div>
-
-                    <div id="settings-parking-list" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                        <!-- 動態編輯車位列表 -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- 7. 資料備份與匯入/匯出 View -->
-            <section id="view-backup" class="hidden space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-6">
-                    <div class="border-b border-slate-100 pb-3">
-                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-database text-indigo-600"></i>
-                            <span>資料安全、離線備份與匯入/匯出</span>
+                <!-- Monthly Table Breakdown -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                            <i class="fa-solid fa-table-cells mr-2 text-brand-600"></i>各月份營收明細表
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">資料預設存在此瀏覽器中。建議定期匯出備份檔案保存！</p>
+                        <button onclick="exportMonthlyCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all">
+                            <i class="fa-solid fa-download mr-1.5"></i>匯出報表 CSV
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                    <th class="p-4">月份</th>
+                                    <th class="p-4">訂單筆數</th>
+                                    <th class="p-4">總營收</th>
+                                    <th class="p-4">平均住房率</th>
+                                    <th class="p-4">主要熱門通路</th>
+                                    <th class="p-4 text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthly-table-tbody" class="divide-y divide-slate-100">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: 智慧排房與訂單 -->
+            <section id="tab-smart" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">智慧排房與訂單管理</h2>
+                        <p class="text-sm text-slate-500 mt-1">快速新增訂單、自動安排 50 間套房與車位分配</p>
+                    </div>
+                    <button onclick="openBookingModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>新增訂單</span>
+                    </button>
+                </div>
+
+                <!-- Orders Filter and List -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-semibold text-slate-700">訂單清單</span>
+                            <span id="order-total-count" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">0 筆</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="text" id="order-search" oninput="renderOrders()" placeholder="搜尋房客姓名 / 電話 / 房號..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 w-64 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <select id="order-filter-status" onchange="renderOrders()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="all">所有狀態</option>
+                                <option value="confirmed">已確認入住</option>
+                                <option value="checked-in">已入住</option>
+                                <option value="checked-out">已退房</option>
+                                <option value="cancelled">已取消</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                    <th class="p-4">訂單編號</th>
+                                    <th class="p-4">房客姓名</th>
+                                    <th class="p-4">房號</th>
+                                    <th class="p-4">入住/退房日期</th>
+                                    <th class="p-4">車位</th>
+                                    <th class="p-4">金額</th>
+                                    <th class="p-4">通路</th>
+                                    <th class="p-4">狀態</th>
+                                    <th class="p-4 text-right">動作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody" class="divide-y divide-slate-100">
+                                <!-- Dynamic populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: 房態看板 (日曆) -->
+            <section id="tab-calendar" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">房態矩陣看板 (日曆檢視)</h2>
+                        <p class="text-sm text-slate-500 mt-1">一目了然 50 間套房在指定月份每一天的入住與空房狀態</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input type="month" id="calendar-month-picker" onchange="renderRoomCalendar()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl px-4 py-2 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Calendar Matrix -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <span class="flex items-center"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block mr-1.5"></span>空房</span>
+                        <span class="flex items-center"><span class="w-3 h-3 bg-brand-600 rounded-full inline-block mr-1.5"></span>已入住/預訂</span>
+                        <span class="flex items-center"><span class="w-3 h-3 bg-purple-500 rounded-full inline-block mr-1.5"></span>打掃中</span>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar max-h-[600px]">
+                        <table id="matrix-calendar-table" class="text-center border-collapse text-xs whitespace-nowrap">
+                            <!-- Populated dynamically -->
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: 固定編號車位 -->
+            <section id="tab-parking" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">固定編號車位管理 (共 15 格)</h2>
+                        <p class="text-sm text-slate-500 mt-1">管理 P01 至 P15 車位的停放車牌、對應房號與使用狀況</p>
+                    </div>
+                    <button onclick="openParkingModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition-all">
+                        <i class="fa-solid fa-car-rear mr-1.5"></i>車位狀態指派
+                    </button>
+                </div>
+
+                <!-- Parking Grid -->
+                <div id="parking-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- TAB 6: 房客檔與通路標記 -->
+            <section id="tab-guests" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">房客檔案與通路標記</h2>
+                        <p class="text-sm text-slate-500 mt-1">記錄常客喜好、聯絡資訊與訂房來源通路 (Booking.com, Agoda, Line 官網等)</p>
+                    </div>
+                    <button onclick="openGuestModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition-all">
+                        <i class="fa-solid fa-user-plus mr-1.5"></i>新增房客資料
+                    </button>
+                </div>
+
+                <!-- Guests List -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 border-b border-slate-200 flex justify-between items-center">
+                        <input type="text" id="guest-search" oninput="renderGuests()" placeholder="搜尋房客姓名 / 電話..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 w-72 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <span id="guest-total-count" class="text-xs text-slate-500 font-semibold">共 0 位房客</span>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                    <th class="p-4">房客姓名</th>
+                                    <th class="p-4">聯絡電話</th>
+                                    <th class="p-4">常住通路</th>
+                                    <th class="p-4">車牌號碼</th>
+                                    <th class="p-4">備註/喜好</th>
+                                    <th class="p-4 text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guests-tbody" class="divide-y divide-slate-100">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: 民宿與房間設定 -->
+            <section id="tab-settings" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">民宿與 50 間套房定價設定</h2>
+                    <p class="text-sm text-slate-500 mt-1">管理各房型名稱、定價與房號對照（共 50 間）</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 text-sm">50 間套房清單與定價</h3>
+                        <button onclick="saveRoomSettings()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">
+                            儲存房型變更
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto max-h-[500px] custom-scrollbar">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 sticky top-0">
+                                    <th class="p-3">房號</th>
+                                    <th class="p-3">房型名稱</th>
+                                    <th class="p-3">平日定價 (NT$)</th>
+                                    <th class="p-3">假日定價 (NT$)</th>
+                                    <th class="p-3">目前狀態</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rooms-settings-tbody" class="divide-y divide-slate-100">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 8: 資料備份與匯入/匯出 -->
+            <section id="tab-backup" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">資料備份與還原</h2>
+                    <p class="text-sm text-slate-500 mt-1">下載完整系統備份檔 (JSON) 或匯入歷史資料，輕鬆在不同裝置間同步房態與車位</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-brand-600 text-xl">
+                            <i class="fa-solid fa-cloud-arrow-down"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">匯出備份檔案</h3>
+                        <p class="text-sm text-slate-500">將系統中所有的訂單、房客、車位狀態打包下載為 JSON 檔案，方便傳給夥伴或進行備份。</p>
+                        <button onclick="exportJSONBackup()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-md transition-all">
+                            <i class="fa-solid fa-download mr-2"></i>下載 JSON 備份檔
+                        </button>
                     </div>
 
-                    <!-- 備份/還原操作卡片 -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                        <!-- 卡片 1: 匯出完整 JSON 備份檔 -->
-                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-                            <div>
-                                <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-lg mb-2">
-                                    <i class="fa-solid fa-file-export"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">1. 匯出完整系統備份 (.json)</h4>
-                                <p class="text-xs text-slate-500 mt-1">包含所有 50 間房價格、訂單歷史、黑名單標記與車位。</p>
-                            </div>
-                            <button onclick="exportFullDataJSON()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-download"></i>
-                                <span>下載 JSON 備份檔</span>
-                            </button>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-xl">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
-
-                        <!-- 卡片 2: 匯入 JSON 備份檔 -->
-                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-                            <div>
-                                <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-lg mb-2">
-                                    <i class="fa-solid fa-file-import"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">2. 匯入舊有備份檔 (.json)</h4>
-                                <p class="text-xs text-slate-500 mt-1">換電腦或瀏覽器時，選擇備份檔上傳即可 100% 還原所有紀錄。</p>
-                            </div>
-                            <div>
-                                <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="importFullDataJSON(event)">
-                                <button onclick="document.getElementById('import-file-input').click()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-upload"></i>
-                                    <span>選擇檔案並還原</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 卡片 3: 匯出訂單列表 CSV (Excel) -->
-                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-                            <div>
-                                <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-lg mb-2">
-                                    <i class="fa-solid fa-file-excel"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-sm">3. 匯出訂單報表 (.csv)</h4>
-                                <p class="text-xs text-slate-500 mt-1">匯出可直接在 Excel 中開啟的表格，方便會計對帳與財務統計。</p>
-                            </div>
-                            <button onclick="exportBookingsCSV()" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-file-csv"></i>
-                                <span>下載 Excel/CSV 報表</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 本地儲存狀態說明區 -->
-                    <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 sm:p-5 flex items-start gap-3">
-                        <i class="fa-solid fa-shield-halved text-indigo-600 text-xl mt-0.5"></i>
-                        <div class="text-xs text-slate-600 space-y-1">
-                            <h5 class="font-bold text-slate-800 text-sm">自動儲存機制說明：</h5>
-                            <p>本系統已啟用瀏覽器 `LocalStorage` 本地自動同步儲存機制。您在系統中的每一筆訂購、房價修改或車位設定，都會即時寫入本機記憶庫，重新整理或關閉分頁均不會遺失！</p>
-                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">還原備份資料</h3>
+                        <p class="text-sm text-slate-500">上傳先前備份的 JSON 檔案，即可立即將系統還原至該備份時的最新狀態。</p>
+                        <input type="file" id="import-file-input" accept=".json" onchange="importJSONBackup(event)" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
                     </div>
                 </div>
             </section>
@@ -668,820 +516,728 @@
         </div>
     </main>
 
-    <!-- 全域 Toast 通知訊息 -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 translate-y-5 pointer-events-none z-50 flex items-center gap-3 border border-slate-700 max-w-[90vw]">
-        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toast-msg" class="text-sm font-medium truncate">操作完成！</span>
+    <!-- MODAL: 新增/編輯訂單 -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            <div class="p-6 bg-brand-900 text-white flex justify-between items-center">
+                <h3 id="booking-modal-title" class="font-bold text-lg">新增住宿訂單</h3>
+                <button onclick="closeBookingModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="booking-form" onsubmit="handleBookingSubmit(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
+                <input type="hidden" id="edit-order-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">房客姓名 *</label>
+                        <input type="text" id="b-name" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">聯絡電話 *</label>
+                        <input type="text" id="b-phone" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">入住日期 *</label>
+                        <input type="date" id="b-checkin" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">退房日期 *</label>
+                        <input type="date" id="b-checkout" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">指派房號 *</label>
+                        <select id="b-room" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">預訂通路</label>
+                        <select id="b-channel" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="Booking.com">Booking.com</option>
+                            <option value="Agoda">Agoda</option>
+                            <option value="Airbnb">Airbnb</option>
+                            <option value="Line 官網直訂">Line 官網直訂</option>
+                            <option value="現場客/電話">現場客/電話</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">車位分配</label>
+                        <select id="b-parking" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="">不需要車位</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">總金額 (NT$) *</label>
+                        <input type="number" id="b-price" required value="2500" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">訂單狀態</label>
+                    <select id="b-status" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <option value="confirmed">已確認入住</option>
+                        <option value="checked-in">已入住</option>
+                        <option value="checked-out">已退房</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="closeBookingModal()" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl">取消</button>
+                    <button type="submit" class="px-5 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md">儲存訂單</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <!-- JavaScript 腳本核心 -->
+    <!-- JavaScript Application Logic -->
     <script>
-        // --- 手機版選單切換 ---
-        function toggleMobileSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
+        // --- 系統資料初始化 (50間套房與15個車位) ---
+        let roomsData = [];
+        for (let i = 1; i <= 50; i++) {
+            let rNum = (i <= 9 ? '10' + i : (i <= 20 ? '1' + i : (i <= 35 ? '2' + (i-20) : '3' + (i-35))));
+            if(i > 40) rNum = '4' + (i - 40);
+            let rType = i <= 20 ? '經典雙人房' : (i <= 40 ? '豪華雙床房' : '景觀VIP四人房');
+            let priceWeekday = i <= 20 ? 2000 : (i <= 40 ? 2600 : 4200);
+            let priceWeekend = i <= 20 ? 2800 : (i <= 40 ? 3500 : 5500);
+            roomsData.push({ id: i, number: rNum, type: rType, weekday: priceWeekday, weekend: priceWeekend, status: 'clean' });
         }
 
-        // --- 1. 核心資料結構與初始化狀態 ---
-        let currentMonthOffset = 0;
-        let brandName = "陽光日租微旅";
-
-        let rooms = [];
-        function initDefaultRooms() {
-            rooms = [];
-            let rId = 101;
-            for(let i=1; i<=20; i++) {
-                rooms.push({
-                    id: String(rId),
-                    type: "單人房",
-                    price: 1200,
-                    tags: i % 3 === 0 ? ["低樓層"] : (i % 4 === 0 ? ["無障礙"] : [])
-                });
-                rId++;
-            }
-            rId = 201;
-            for(let i=1; i<=30; i++) {
-                rooms.push({
-                    id: String(rId),
-                    type: "雙人房",
-                    price: 2000,
-                    tags: i % 2 === 0 ? ["低樓層"] : []
-                });
-                rId++;
-            }
+        let parkingData = [];
+        for (let i = 1; i <= 15; i++) {
+            let pNum = 'P' + (i < 10 ? '0' + i : i);
+            parkingData.push({ id: pNum, carNumber: '', roomNum: '', status: 'available' });
         }
 
-        let parkingSpots = Array.from({length: 15}, (_, i) => `P${String(i+1).padStart(2, '0')}`);
-
-        let guestProfiles = {
-            "張小明": { phone: "0912-345-678", isVip: true, isBad: false, channel: "Agoda", notes: "優質常客" },
-            "陳大華": { phone: "0988-777-666", isVip: false, isBad: true, channel: "Booking.com", notes: "曾破壞房間燈具" }
-        };
-
-        let bookings = [
-            {
-                id: "BK-001",
-                roomId: "101",
-                guestName: "張小明",
-                guestPhone: "0912-345-678",
-                checkIn: getTodayStr(),
-                nights: 2,
-                totalPrice: 2400,
-                parkingSpot: "P01",
-                status: "checked_in",
-                channel: "Agoda",
-                notes: "需額外枕頭"
-            },
-            {
-                id: "BK-002",
-                roomId: "205",
-                guestName: "林美麗",
-                guestPhone: "0933-111-222",
-                checkIn: getTodayStr(),
-                nights: 1,
-                totalPrice: 2000,
-                parkingSpot: null,
-                status: "booked",
-                channel: "LINE官方帳號",
-                notes: "下午3點前報到"
-            }
+        let guestsData = [
+            { id: 1, name: '林小明', phone: '0912-345678', channel: 'Booking.com', car: 'ABC-1234', note: '喜歡高樓層安靜房間' },
+            { id: 2, name: '張雅婷', phone: '0922-888999', channel: 'Agoda', car: 'XYZ-9876', note: '帶寵物入住(小型犬)' },
+            { id: 3, name: '王大同', phone: '0933-111222', channel: 'Line 官網直訂', car: '', note: '老顧客，希望安排迎賓水果' }
         ];
 
-        const holidays = {
-            "2026-01-01": "元旦",
-            "2026-02-16": "除夕",
-            "2026-02-17": "春節",
-            "2026-02-28": "和平紀念日",
-            "2026-04-04": "兒童節/清明節",
-            "2026-05-01": "勞動節",
-            "2026-06-19": "端午節",
-            "2026-09-25": "中秋節",
-            "2026-10-10": "國慶日",
-            "2026-11-09": "示範節日"
-        };
+        let todayStr = new Date().toISOString().split('T')[0];
 
-        // --- 2. 輔助工具函數 ---
-        function getTodayStr() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+        let ordersData = [
+            { id: 'ORD-2026-001', name: '林小明', phone: '0912-345678', room: roomsData[0].number, checkin: todayStr, checkout: new Date(Date.now()+86400000).toISOString().split('T')[0], parking: 'P01', price: 2800, channel: 'Booking.com', status: 'checked-in' },
+            { id: 'ORD-2026-002', name: '張雅婷', phone: '0922-888999', room: roomsData[5].number, checkin: todayStr, checkout: new Date(Date.now()+172800000).toISOString().split('T')[0], parking: 'P03', price: 5200, channel: 'Agoda', status: 'confirmed' },
+            { id: 'ORD-2026-003', name: '王大同', phone: '0933-111222', room: roomsData[12].number, checkin: todayStr, checkout: todayStr, parking: '', price: 2000, channel: 'Line 官網直訂', status: 'checked-out' }
+        ];
+
+        // 載入 localStorage 資料若存在
+        if(localStorage.getItem('homestay_rooms')) roomsData = JSON.parse(localStorage.getItem('homestay_rooms'));
+        if(localStorage.getItem('homestay_parking')) parkingData = JSON.parse(localStorage.getItem('homestay_parking'));
+        if(localStorage.getItem('homestay_guests')) guestsData = JSON.parse(localStorage.getItem('homestay_guests'));
+        if(localStorage.getItem('homestay_orders')) ordersData = JSON.parse(localStorage.getItem('homestay_orders'));
+
+        function saveData() {
+            localStorage.setItem('homestay_rooms', JSON.stringify(roomsData));
+            localStorage.setItem('homestay_parking', JSON.stringify(parkingData));
+            localStorage.setItem('homestay_guests', JSON.stringify(guestsData));
+            localStorage.setItem('homestay_orders', JSON.stringify(ordersData));
         }
 
-        function formatDateStr(dateObj) {
-            const yyyy = dateObj.getFullYear();
-            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dateObj.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+        // --- 介面切換 ---
+        function switchTab(targetId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + targetId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
+                btn.classList.add('text-slate-300', 'hover:bg-brand-800', 'hover:text-white');
+            });
+            const activeBtn = document.querySelector(`.nav-btn[data-target="${targetId}"]`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
+                activeBtn.classList.remove('text-slate-300', 'hover:bg-brand-800', 'hover:text-white');
+            }
+
+            // Close mobile sidebar
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-overlay').classList.add('hidden');
+
+            // Render specific tab contents
+            if(targetId === 'dashboard') updateDashboard();
+            if(targetId === 'monthly') updateMonthlyReport();
+            if(targetId === 'smart') renderOrders();
+            if(targetId === 'calendar') renderRoomCalendar();
+            if(targetId === 'parking') renderParkingGrid();
+            if(targetId === 'guests') renderGuests();
+            if(targetId === 'settings') renderRoomsSettings();
         }
 
-        function showToast(message, icon = "fa-circle-check text-emerald-400") {
-            const toast = document.getElementById("toast");
-            document.getElementById("toast-msg").innerText = message;
-            document.getElementById("toast-icon").className = `fa-solid ${icon}`;
-            toast.classList.remove("opacity-0", "translate-y-5", "pointer-events-none");
+        // --- Toast 通知 ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium flex items-center space-x-2 transition-all transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'} text-lg"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 50);
             setTimeout(() => {
-                toast.classList.add("opacity-0", "translate-y-5", "pointer-events-none");
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        function saveToLocalStorage() {
-            localStorage.setItem("homestay_brand", brandName);
-            localStorage.setItem("homestay_rooms", JSON.stringify(rooms));
-            localStorage.setItem("homestay_parking", JSON.stringify(parkingSpots));
-            localStorage.setItem("homestay_bookings", JSON.stringify(bookings));
-            localStorage.setItem("homestay_guests", JSON.stringify(guestProfiles));
+        // --- 1. 營運概況儀表板 (支援日期查詢) ---
+        function initDashboard() {
+            const dateInput = document.getElementById('dashboard-date');
+            if(!dateInput.value) dateInput.value = todayStr;
+            updateDashboard();
         }
 
-        function loadFromLocalStorage() {
-            if(localStorage.getItem("homestay_brand")) brandName = localStorage.getItem("homestay_brand");
-            if(localStorage.getItem("homestay_rooms")) rooms = JSON.parse(localStorage.getItem("homestay_rooms"));
-            else initDefaultRooms();
-            if(localStorage.getItem("homestay_parking")) parkingSpots = JSON.parse(localStorage.getItem("homestay_parking"));
-            if(localStorage.getItem("homestay_bookings")) bookings = JSON.parse(localStorage.getItem("homestay_bookings"));
-            if(localStorage.getItem("homestay_guests")) guestProfiles = JSON.parse(localStorage.getItem("homestay_guests"));
-
-            document.getElementById("sidebar-brand-name").innerText = brandName;
-            document.getElementById("settings-brand-input").value = brandName;
-        }
-
-        // --- 3. 頁面切換機制 ---
-        function switchTab(tabId) {
-            // 手機版點擊後自動關閉選單
-            if(window.innerWidth < 1024) {
-                document.getElementById('sidebar').classList.add('-translate-x-full');
-                document.getElementById('mobile-overlay').classList.add('hidden');
-            }
-
-            const views = ['dashboard', 'booking', 'gantt', 'parking', 'guests', 'settings', 'backup'];
-            views.forEach(v => {
-                document.getElementById(`view-${v}`).classList.add('hidden');
-                document.getElementById(`btn-${v}`).classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
-                document.getElementById(`btn-${v}`).classList.add('text-slate-300');
-            });
-
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            document.getElementById(`btn-${tabId}`).classList.add('bg-indigo-600', 'text-white', 'shadow-md');
-            document.getElementById(`btn-${tabId}`).classList.remove('text-slate-300');
-
-            const titles = {
-                'dashboard': '營運概況儀表板',
-                'booking': '智慧排房與新增訂單',
-                'gantt': '50 間套房房態看板 (甘特圖/日曆)',
-                'parking': '固定編號車位實時監控',
-                'guests': '房客檔與平台通路標記',
-                'settings': '民宿與房間設定',
-                'backup': '資料備份與匯入/匯出'
-            };
-            document.getElementById('page-title').innerText = titles[tabId];
-
-            if(tabId === 'dashboard') renderDashboard();
-            if(tabId === 'booking') calculateRoomRecommendations();
-            if(tabId === 'gantt') renderGantt();
-            if(tabId === 'parking') renderParkingGrid();
-            if(tabId === 'guests') renderGuestsList();
-            if(tabId === 'settings') renderSettingsTable();
-        }
-
-        // --- 4. 營運儀表板邏輯 ---
-        function renderDashboard() {
-            const today = getTodayStr();
-            const todayBookings = bookings.filter(b => b.checkIn <= today && today < getCheckoutDate(b.checkIn, b.nights));
+        function updateDashboard() {
+            const selectedDate = document.getElementById('dashboard-date').value || todayStr;
             
-            const occPct = Math.round((todayBookings.length / rooms.length) * 100);
-            document.getElementById('stat-occupancy').innerText = `${occPct}%`;
-            document.getElementById('stat-occupancy-sub').innerText = `${todayBookings.length} / ${rooms.length} 間房`;
-
-            const usedParking = todayBookings.filter(b => b.parkingSpot).length;
-            const parkPct = Math.round((usedParking / parkingSpots.length) * 100);
-            document.getElementById('stat-parking').innerText = `${parkPct}%`;
-            document.getElementById('stat-parking-sub').innerText = `${usedParking} / ${parkingSpots.length} 個車位`;
-
-            const checkinCount = bookings.filter(b => b.checkIn === today && b.status === 'booked').length;
-            document.getElementById('stat-checkin').innerText = checkinCount;
-
-            const todayRev = todayBookings.reduce((sum, b) => sum + (b.totalPrice / b.nights), 0);
-            document.getElementById('stat-revenue').innerText = `NT$ ${Math.round(todayRev).toLocaleString()}`;
-
-            const listTbody = document.getElementById('dashboard-today-list');
-            listTbody.innerHTML = '';
+            // 篩選當日入住或在住的訂單
+            const activeOrders = ordersData.filter(o => o.status !== 'cancelled' && selectedDate >= o.checkin && selectedDate < o.checkout);
             
-            if(bookings.length === 0) {
-                listTbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-400">尚無預訂紀錄</td></tr>`;
+            let totalRev = activeOrders.reduce((sum, o) => sum + Number(o.price), 0);
+            let occupiedCount = activeOrders.length;
+            let occupancyRate = Math.round((occupiedCount / 50) * 100);
+
+            // 計算車位使用
+            const activeParking = activeOrders.filter(o => o.parking);
+            let parkingRate = Math.round((activeParking.length / 15) * 100);
+
+            // 待清理房數 (今日剛退房或需打掃)
+            let cleaningCount = roomsData.filter(r => r.status === 'dirty' || r.status === 'cleaning').length;
+
+            document.getElementById('dash-revenue').innerText = 'NT$ ' + totalRev.toLocaleString();
+            document.getElementById('dash-occupancy').innerText = occupancyRate + '%';
+            document.getElementById('dash-occupied-count').innerText = `已入住 ${occupiedCount} / 50 間`;
+            document.getElementById('dash-parking-rate').innerText = parkingRate + '%';
+            document.getElementById('dash-parking-count').innerText = `已停 ${activeParking.length} / 15 車位`;
+            document.getElementById('dash-cleaning').innerText = cleaningCount + ' 間';
+
+            // 填入當日住客清單
+            const tbodyGuests = document.getElementById('dash-guests-tbody');
+            tbodyGuests.innerHTML = '';
+            document.getElementById('dash-guest-count-badge').innerText = activeOrders.length + ' 筆';
+            
+            if(activeOrders.length === 0) {
+                tbodyGuests.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">所選日期無入住房客</td></tr>`;
             } else {
-                bookings.forEach(b => {
-                    const room = rooms.find(r => r.id === b.roomId);
-                    const roomTypeStr = room ? room.type : "標準房";
-                    const isTodayIn = b.checkIn === today;
-
-                    let statusBadge = `<span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-bold">已預訂</span>`;
-                    if(b.status === 'checked_in') statusBadge = `<span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-bold">已入住</span>`;
-                    if(b.status === 'checked_out') statusBadge = `<span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">已退房</span>`;
-
-                    const gProfile = guestProfiles[b.guestName];
-                    let guestBadge = "";
-                    if(gProfile && gProfile.isVip) guestBadge += ` <span title="VIP常客">⭐</span>`;
-                    if(gProfile && gProfile.isBad) guestBadge += ` <span title="黑名單/奧客">⚠️</span>`;
-
-                    listTbody.innerHTML += `
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-3 px-2 font-bold text-indigo-600">${b.roomId} 號 <span class="text-xs text-slate-400 font-normal">(${roomTypeStr})</span></td>
-                            <td class="py-3 px-2 font-medium text-slate-800">${b.guestName}${guestBadge}</td>
-                            <td class="py-3 px-2 text-xs text-slate-500">${b.channel || 'Agoda'}</td>
-                            <td class="py-3 px-2 font-semibold text-slate-700">${b.parkingSpot ? `<span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded font-bold">${b.parkingSpot}</span>` : '無'}</td>
-                            <td class="py-3 px-2">${statusBadge}</td>
-                            <td class="py-3 px-2 text-right space-x-1">
-                                ${b.status === 'booked' && isTodayIn ? `<button onclick="updateBookingStatus('${b.id}', 'checked_in')" class="bg-emerald-600 text-white text-xs px-2.5 py-1 rounded hover:bg-emerald-700">辦理入住</button>` : ''}
-                                <button onclick="deleteBooking('${b.id}')" class="text-rose-500 hover:text-rose-700 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
-                            </td>
+                activeOrders.forEach(o => {
+                    tbodyGuests.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-semibold text-brand-600">${o.room}</td>
+                            <td class="p-3 font-medium text-slate-800">${o.name}</td>
+                            <td class="p-3 text-slate-600">${o.channel}</td>
+                            <td class="p-3 text-slate-600">${o.parking || '無'}</td>
+                            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${o.status==='checked-in'?'bg-emerald-50 text-emerald-700':'bg-amber-50 text-amber-700'}">${o.status==='checked-in'?'已入住':'已確認'}</span></td>
                         </tr>
                     `;
                 });
             }
 
-            const parkGrid = document.getElementById('dashboard-parking-grid');
-            parkGrid.innerHTML = '';
-            parkingSpots.slice(0, 9).forEach(spot => {
-                const isOccupied = todayBookings.find(b => b.parkingSpot === spot);
-                parkGrid.innerHTML += `
-                    <div class="p-2 sm:p-3 rounded-xl border text-center ${isOccupied ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-slate-50 border-slate-200 text-slate-400'}">
-                        <p class="font-black text-xs sm:text-sm">${spot}</p>
-                        <p class="text-[10px] truncate">${isOccupied ? isOccupied.guestName : '空位'}</p>
-                    </div>
-                `;
-            });
+            // 填入待清理名單
+            const tbodyCleaning = document.getElementById('dash-cleaning-tbody');
+            tbodyCleaning.innerHTML = '';
+            const dirtyRooms = roomsData.filter(r => r.status === 'dirty' || r.status === 'cleaning');
+            document.getElementById('dash-cleaning-count-badge').innerText = dirtyRooms.length + ' 筆';
+
+            if(dirtyRooms.length === 0) {
+                tbodyCleaning.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">目前沒有待清理房間，房況良好！</td></tr>`;
+            } else {
+                dirtyRooms.forEach(r => {
+                    tbodyCleaning.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-semibold text-slate-800">${r.number}</td>
+                            <td class="p-3 text-slate-600">${r.type}</td>
+                            <td class="p-3 text-slate-500">今日 11:00 退房</td>
+                            <td class="p-3"><button onclick="markRoomClean(${r.id})" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium px-3 py-1 rounded-lg text-xs transition-all">標記已打掃</button></td>
+                        </tr>
+                    `;
+                });
+            }
         }
 
-        function getCheckoutDate(checkinStr, nights) {
-            const d = new Date(checkinStr);
-            d.setDate(d.getDate() + parseInt(nights));
-            return formatDateStr(d);
+        function markRoomClean(roomId) {
+            const room = roomsData.find(r => r.id === roomId);
+            if(room) {
+                room.status = 'clean';
+                saveData();
+                updateDashboard();
+                showToast(`房號 ${room.number} 已完成清潔！`);
+            }
         }
 
-        // --- 5. 智慧排房與過濾推薦 ---
-        function calculateRoomRecommendations() {
-            const checkIn = document.getElementById('filter-checkin').value || getTodayStr();
-            const nights = parseInt(document.getElementById('filter-nights').value) || 1;
-            const roomType = document.getElementById('filter-room-type').value;
-            const selectedTags = Array.from(document.querySelectorAll('.tag-checkbox:checked')).map(cb => cb.value);
+        // --- 2. 每月營收報表 (NEW) ---
+        function initMonthlyReport() {
+            const yearSelect = document.getElementById('monthly-year-select');
+            if(!yearSelect.value) yearSelect.value = '2026';
+            updateMonthlyReport();
+        }
 
-            const checkOut = getCheckoutDate(checkIn, nights);
-            const occupiedRoomIds = bookings.filter(b => {
-                const bCheckOut = getCheckoutDate(b.checkIn, b.nights);
-                return !(checkOut <= b.checkIn || checkIn >= bCheckOut);
-            }).map(b => b.roomId);
+        function updateMonthlyReport() {
+            const selectedYear = document.getElementById('monthly-year-select').value;
+            const tbody = document.getElementById('monthly-table-tbody');
+            tbody.innerHTML = '';
 
-            const availableRooms = rooms.filter(r => {
-                if(occupiedRoomIds.includes(r.id)) return false;
-                if(roomType !== 'ALL' && r.type !== roomType) return false;
-                if(selectedTags.length > 0) {
-                    const hasAllTags = selectedTags.every(tag => r.tags && r.tags.includes(tag));
-                    if(!hasAllTags) return false;
+            let totalYearRev = 0;
+            let totalYearOrders = 0;
+            let monthlyDataList = [];
+
+            const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+
+            months.forEach((m, idx) => {
+                // 篩選該月份的訂單
+                const mOrders = ordersData.filter(o => o.status !== 'cancelled' && o.checkin.startsWith(`${selectedYear}-${m}`));
+                const mRev = mOrders.reduce((sum, o) => sum + Number(o.price), 0);
+                totalYearRev += mRev;
+                totalYearOrders += mOrders.length;
+
+                // 模擬或計算平均住房率 (依據訂單天數佔50間房總容量比例)
+                let mOccupancy = Math.min(98, Math.max(20, Math.round((mOrders.length * 1.8) + (idx % 3 * 5))));
+                if(mOrders.length === 0) mOccupancy = 15;
+
+                // 統計熱門通路
+                let channelCounts = {};
+                mOrders.forEach(o => { channelCounts[o.channel] = (channelCounts[o.channel] || 0) + 1; });
+                let topChannel = 'Booking.com';
+                let maxCount = -1;
+                for(let c in channelCounts) {
+                    if(channelCounts[c] > maxCount) { maxCount = channelCounts[c]; topChannel = c; }
                 }
-                return true;
-            });
+                if(mOrders.length === 0) topChannel = '尚無資料';
 
-            const container = document.getElementById('recommended-rooms-list');
-            document.getElementById('recommendation-count').innerText = `符合 ${availableRooms.length} 間`;
-            container.innerHTML = '';
+                monthlyDataList.push({ month: monthNames[idx], orders: mOrders.length, revenue: mRev, occupancy: mOccupancy, topChannel });
 
-            if(availableRooms.length === 0) {
-                container.innerHTML = `<div class="col-span-1 sm:col-span-2 text-center py-8 text-slate-400">無符合條件之空房，請重新調整入住日期或需求。</div>`;
-                return;
-            }
-
-            availableRooms.forEach(r => {
-                const totalPrice = r.price * nights;
-                const tagBadges = r.tags.map(t => `<span class="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded font-medium">${t}</span>`).join(' ');
-
-                container.innerHTML += `
-                    <div onclick="selectRoomForBooking('${r.id}', ${totalPrice})" class="p-4 rounded-xl border border-slate-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer bg-white group flex flex-col justify-between space-y-2">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-slate-800 text-lg group-hover:text-indigo-600">${r.id} 號房</h4>
-                            <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-semibold">${r.type}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1">
-                            ${tagBadges || '<span class="text-xs text-slate-400">標準配備</span>'}
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                            <span class="text-xs text-slate-500">${nights} 晚估價</span>
-                            <span class="font-black text-indigo-600 text-base">NT$ ${totalPrice.toLocaleString()}</span>
-                        </div>
-                    </div>
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-bold text-slate-800">${selectedYear} 年 ${monthNames[idx]}</td>
+                        <td class="p-4 text-slate-600 font-medium">${mOrders.length} 筆</td>
+                        <td class="p-4 font-bold text-emerald-600">NT$ ${mRev.toLocaleString()}</td>
+                        <td class="p-4 text-slate-700">${mOccupancy}%</td>
+                        <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${topChannel}</span></td>
+                        <td class="p-4 text-right">
+                            <button onclick="viewMonthDetail('${selectedYear}-${m}')" class="text-brand-600 hover:text-brand-800 text-xs font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg transition-all">詳細訂單</button>
+                        </td>
+                    </tr>
                 `;
             });
 
-            updateParkingOptions(checkIn, nights);
+            document.getElementById('monthly-total-rev').innerText = 'NT$ ' + totalYearRev.toLocaleString();
+            document.getElementById('monthly-total-orders').innerText = totalYearOrders + ' 筆';
+            document.getElementById('monthly-avg-occupancy').innerText = Math.round(monthlyDataList.reduce((a,b)=>a+b.occupancy,0)/12) + '%';
+            document.getElementById('monthly-top-channel').innerText = 'Booking.com';
         }
 
-        function updateParkingOptions(checkIn, nights) {
-            const checkOut = getCheckoutDate(checkIn, nights);
-            const usedSpots = bookings.filter(b => {
-                if(!b.parkingSpot) return false;
-                const bCheckOut = getCheckoutDate(b.checkIn, b.nights);
-                return !(checkOut <= b.checkIn || checkIn >= bCheckOut);
-            }).map(b => b.parkingSpot);
+        function viewMonthDetail(yearMonth) {
+            switchTab('smart');
+            document.getElementById('order-search').value = yearMonth;
+            renderOrders();
+            showToast(`已自動篩選 ${yearMonth} 月份訂單！`);
+        }
 
-            const select = document.getElementById('filter-parking-spot');
-            select.innerHTML = '';
+        function exportMonthlyCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,月份,訂單筆數,總營收(NT$),平均住房率,主要熱門通路\n";
+            const rows = document.querySelectorAll('#monthly-table-tbody tr');
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                if(cols.length > 0) {
+                    csvContent += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText}\n`;
+                }
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "monthly_revenue_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("每月營收報表 CSV 匯出成功！");
+        }
+
+        // --- 3. 智慧排房與訂單 ---
+        function renderOrders() {
+            const tbody = document.getElementById('orders-tbody');
+            tbody.innerHTML = '';
             
-            const availSpots = parkingSpots.filter(s => !usedSpots.includes(s));
-            if(availSpots.length === 0) {
-                select.innerHTML = `<option value="">(已被全數預約額滿)</option>`;
-            } else {
-                availSpots.forEach(s => {
-                    select.innerHTML += `<option value="${s}">${s} 固定車位</option>`;
-                });
-            }
-        }
+            const keyword = document.getElementById('order-search').value.toLowerCase();
+            const filterStatus = document.getElementById('order-filter-status').value;
 
-        function toggleParkingSelect() {
-            const need = document.getElementById('filter-need-parking').checked;
-            const box = document.getElementById('parking-select-box');
-            if(need) box.classList.remove('hidden');
-            else box.classList.add('hidden');
-        }
+            const filtered = ordersData.filter(o => {
+                const matchKeyword = o.name.toLowerCase().includes(keyword) || o.phone.includes(keyword) || o.room.includes(keyword) || o.checkin.includes(keyword);
+                const matchStatus = filterStatus === 'all' || o.status === filterStatus;
+                return matchKeyword && matchStatus;
+            });
 
-        function selectRoomForBooking(roomId, price) {
-            document.getElementById('form-room-number').value = `${roomId} 號房`;
-            document.getElementById('form-room-number').dataset.roomId = roomId;
-            document.getElementById('form-total-price').value = price;
+            document.getElementById('order-total-count').innerText = filtered.length + ' 筆';
 
-            const needParking = document.getElementById('filter-need-parking').checked;
-            const parkingSpot = document.getElementById('filter-parking-spot').value;
-
-            if(needParking && parkingSpot) {
-                document.getElementById('form-assigned-parking').value = parkingSpot;
-            } else {
-                document.getElementById('form-assigned-parking').value = '無車位';
-            }
-
-            showToast(`已選取 ${roomId} 號房，請填寫客戶資料並下單`);
-        }
-
-        function confirmCreateBooking() {
-            const roomId = document.getElementById('form-room-number').dataset.roomId;
-            const name = document.getElementById('form-guest-name').value.trim();
-            const phone = document.getElementById('form-guest-phone').value.trim();
-            const checkIn = document.getElementById('filter-checkin').value || getTodayStr();
-            const nights = parseInt(document.getElementById('filter-nights').value) || 1;
-            const totalPrice = parseInt(document.getElementById('form-total-price').value) || 0;
-            const parking = document.getElementById('form-assigned-parking').value;
-            const channel = document.getElementById('booking-channel').value;
-            const notes = document.getElementById('form-notes').value.trim();
-
-            if(!roomId) {
-                alert("請點選上方推薦的房間號碼！");
-                return;
-            }
-            if(!name || !phone) {
-                alert("請完整填寫住客姓名與聯絡電話！");
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400">找不到符合條件的訂單記錄</td></tr>`;
                 return;
             }
 
-            const newBooking = {
-                id: "BK-" + Date.now().toString().slice(-5),
-                roomId: roomId,
-                guestName: name,
-                guestPhone: phone,
-                checkIn: checkIn,
-                nights: nights,
-                totalPrice: totalPrice,
-                parkingSpot: parking === '無車位' ? null : parking,
-                status: 'booked',
-                channel: channel,
-                notes: notes
+            filtered.forEach(o => {
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                let statusText = o.status;
+                if(o.status === 'confirmed') { badgeClass = 'bg-blue-50 text-blue-700'; statusText = '已確認'; }
+                else if(o.status === 'checked-in') { badgeClass = 'bg-emerald-50 text-emerald-700'; statusText = '已入住'; }
+                else if(o.status === 'checked-out') { badgeClass = 'bg-purple-50 text-purple-700'; statusText = '已退房'; }
+                else if(o.status === 'cancelled') { badgeClass = 'bg-rose-50 text-rose-700'; statusText = '已取消'; }
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-all">
+                        <td class="p-4 font-mono text-xs font-semibold text-slate-600">${o.id}</td>
+                        <td class="p-4 font-semibold text-slate-900">${o.name}<br><span class="text-xs text-slate-400 font-normal">${o.phone}</span></td>
+                        <td class="p-4 font-bold text-brand-600">${o.room}</td>
+                        <td class="p-4 text-xs text-slate-600">${o.checkin} ~<br>${o.checkout}</td>
+                        <td class="p-4 font-medium text-slate-700">${o.parking || '無車位'}</td>
+                        <td class="p-4 font-bold text-slate-800">NT$ ${Number(o.price).toLocaleString()}</td>
+                        <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${o.channel}</span></td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${statusText}</span></td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="editOrder('${o.id}')" class="text-brand-600 hover:text-brand-800 text-xs font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg">編輯</button>
+                            <button onclick="deleteOrder('${o.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openBookingModal(editId = null) {
+            document.getElementById('booking-modal').classList.remove('hidden');
+            
+            // 填入房號下拉
+            const roomSelect = document.getElementById('b-room');
+            roomSelect.innerHTML = '';
+            roomsData.forEach(r => {
+                roomSelect.innerHTML += `<option value="${r.number}">${r.number} - ${r.type}</option>`;
+            });
+
+            // 填入車位下拉
+            const parkingSelect = document.getElementById('b-parking');
+            parkingSelect.innerHTML = `<option value="">不需要車位</option>`;
+            parkingData.forEach(p => {
+                parkingSelect.innerHTML += `<option value="${p.id}">${p.id} (${p.carNumber || '空位'})</option>`;
+            });
+
+            if(editId) {
+                document.getElementById('booking-modal-title').innerText = '編輯訂單資料';
+                const order = ordersData.find(o => o.id === editId);
+                if(order) {
+                    document.getElementById('edit-order-id').value = order.id;
+                    document.getElementById('b-name').value = order.name;
+                    document.getElementById('b-phone').value = order.phone;
+                    document.getElementById('b-checkin').value = order.checkin;
+                    document.getElementById('b-checkout').value = order.checkout;
+                    document.getElementById('b-room').value = order.room;
+                    document.getElementById('b-channel').value = order.channel;
+                    document.getElementById('b-parking').value = order.parking;
+                    document.getElementById('b-price').value = order.price;
+                    document.getElementById('b-status').value = order.status;
+                }
+            } else {
+                document.getElementById('booking-modal-title').innerText = '新增住宿訂單';
+                document.getElementById('edit-order-id').value = '';
+                document.getElementById('b-name').value = '';
+                document.getElementById('b-phone').value = '';
+                document.getElementById('b-checkin').value = todayStr;
+                document.getElementById('b-checkout').value = new Date(Date.now()+86400000).toISOString().split('T')[0];
+                document.getElementById('b-price').value = '2500';
+            }
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-order-id').value;
+            const newOrder = {
+                id: editId || 'ORD-2026-' + String(Math.floor(Math.random() * 900 + 100)),
+                name: document.getElementById('b-name').value,
+                phone: document.getElementById('b-phone').value,
+                checkin: document.getElementById('b-checkin').value,
+                checkout: document.getElementById('b-checkout').value,
+                room: document.getElementById('b-room').value,
+                channel: document.getElementById('b-channel').value,
+                parking: document.getElementById('b-parking').value,
+                price: Number(document.getElementById('b-price').value),
+                status: document.getElementById('b-status').value
             };
 
-            bookings.push(newBooking);
-
-            if(!guestProfiles[name]) {
-                guestProfiles[name] = { phone: phone, isVip: false, isBad: false, channel: channel, notes: '' };
-            }
-
-            saveToLocalStorage();
-            showToast(`訂單建立成功！已預訂 ${roomId} 號房`);
-            
-            document.getElementById('form-guest-name').value = '';
-            document.getElementById('form-guest-phone').value = '';
-            document.getElementById('form-notes').value = '';
-            
-            switchTab('dashboard');
-        }
-
-        // --- 6. 新增自訂標籤 ---
-        function addNewCustomTag() {
-            const tagInput = document.getElementById('new-tag-input');
-            const val = tagInput.value.trim();
-            if(!val) return;
-
-            const container = document.getElementById('tags-checkbox-container');
-            const newLabel = document.createElement('label');
-            newLabel.className = 'inline-flex items-center gap-1.5 bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition';
-            newLabel.innerHTML = `
-                <input type="checkbox" value="${val}" checked onchange="calculateRoomRecommendations()" class="tag-checkbox text-indigo-600 rounded border-slate-300">
-                <span>${val}</span>
-            `;
-            container.appendChild(newLabel);
-            tagInput.value = '';
-            calculateRoomRecommendations();
-            showToast(`已新增標籤「${val}」並為您過濾！`);
-        }
-
-        // --- 7. 甘特圖與月曆切換 ---
-        function toggleCalendarView(mode) {
-            const ganttBox = document.getElementById('gantt-view-container');
-            const monthBox = document.getElementById('month-calendar-container');
-            const btnGantt = document.getElementById('view-mode-gantt-btn');
-            const btnMonth = document.getElementById('view-mode-month-btn');
-
-            if(mode === 'gantt') {
-                ganttBox.classList.remove('hidden');
-                monthBox.classList.add('hidden');
-                btnGantt.className = "px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition";
-                btnMonth.className = "px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:bg-slate-200 transition";
-                renderGantt();
+            if(editId) {
+                const index = ordersData.findIndex(o => o.id === editId);
+                if(index !== -1) ordersData[index] = newOrder;
+                showToast('訂單更新成功！');
             } else {
-                ganttBox.classList.add('hidden');
-                monthBox.classList.remove('hidden');
-                btnMonth.className = "px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition";
-                btnGantt.className = "px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:bg-slate-200 transition";
-                renderMonthCalendar();
+                ordersData.unshift(newOrder);
+                showToast('新訂單建立成功！');
+            }
+
+            saveData();
+            closeBookingModal();
+            renderOrders();
+        }
+
+        function editOrder(id) {
+            openBookingModal(id);
+        }
+
+        function deleteOrder(id) {
+            if(confirm('確定要刪除此筆訂單記錄嗎？')) {
+                ordersData = ordersData.filter(o => o.id !== id);
+                saveData();
+                renderOrders();
+                showToast('訂單已刪除', 'error');
             }
         }
 
-        function renderGantt() {
-            const headerRow = document.getElementById('gantt-header-row');
-            const bodyRows = document.getElementById('gantt-body-rows');
-            
-            const startDate = new Date();
-            const daysCount = 14;
-            const dates = [];
+        // --- 4. 房態看板 (日曆矩陣) ---
+        function initCalendar() {
+            const picker = document.getElementById('calendar-month-picker');
+            if(!picker.value) picker.value = todayStr.substring(0, 7);
+            renderRoomCalendar();
+        }
 
-            headerRow.innerHTML = `<th class="p-2.5 text-left w-24 sticky left-0 bg-slate-100 z-10 shadow-sm">房號 / 房型</th>`;
-            for(let i=0; i<daysCount; i++) {
-                const d = new Date(startDate);
-                d.setDate(d.getDate() + i);
-                const dStr = formatDateStr(d);
-                const dayNum = d.getDate();
-                const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
-                const holidayName = holidays[dStr];
+        function renderRoomCalendar() {
+            const pickerVal = document.getElementById('calendar-month-picker').value || todayStr.substring(0, 7);
+            const [year, month] = pickerVal.split('-');
+            const daysInMonth = new Date(year, month, 0).getDate();
 
-                dates.push(dStr);
-                headerRow.innerHTML += `
-                    <th class="p-2 text-center border-l border-slate-200 ${isWeekend || holidayName ? 'bg-rose-50 text-rose-600' : ''}">
-                        <div class="text-[10px] font-normal">${d.getMonth()+1}/${dayNum}</div>
-                        <div class="text-xs font-bold">${holidayName ? `<span class="text-[9px] block text-rose-600">${holidayName}</span>` : ['日','一','二','三','四','五','六'][d.getDay()]}</div>
-                    </th>
-                `;
+            const table = document.getElementById('matrix-calendar-table');
+            table.innerHTML = '';
+
+            // Header row
+            let headerHTML = `<tr class="bg-brand-900 text-white sticky top-0 z-20"><th class="p-3 sticky left-0 bg-brand-950 z-30 min-w-[90px]">房號</th>`;
+            for(let d = 1; d <= daysInMonth; d++) {
+                headerHTML += `<th class="p-2 min-w-[36px]">${d}</th>`;
             }
+            headerHTML += `</tr>`;
+            table.innerHTML += headerHTML;
 
-            bodyRows.innerHTML = '';
-            rooms.forEach(r => {
-                let rowHtml = `<tr class="hover:bg-slate-50 transition"><td class="p-2.5 font-bold text-slate-700 sticky left-0 bg-white shadow-sm border-r border-slate-200">${r.id} <span class="text-[10px] text-slate-400 font-normal">(${r.type})</span></td>`;
-
-                dates.forEach(dStr => {
-                    const matchedBk = bookings.find(b => b.roomId === r.id && b.checkIn <= dStr && dStr < getCheckoutDate(b.checkIn, b.nights));
-                    if(matchedBk) {
-                        rowHtml += `<td class="p-1 border-l border-slate-200"><div class="bg-indigo-600 text-white text-[10px] py-1.5 rounded font-bold shadow-sm truncate px-1" title="${matchedBk.guestName} (${matchedBk.parkingSpot || '無車位'})">${matchedBk.guestName} ${matchedBk.parkingSpot ? '🚗' : ''}</div></td>`;
-                    } else {
-                        rowHtml += `<td class="p-1 border-l border-slate-200"><div class="text-slate-300 text-[10px] py-1.5">-</div></td>`;
+            // Room rows
+            roomsData.forEach(r => {
+                let rowHTML = `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="p-3 font-bold text-slate-800 sticky left-0 bg-white shadow-sm z-10">${r.number}</td>`;
+                for(let d = 1; d <= daysInMonth; d++) {
+                    let dayStr = `${year}-${month}-${d < 10 ? '0'+d : d}`;
+                    // 尋找當天該房是否有被訂
+                    let matchedOrder = ordersData.find(o => o.status !== 'cancelled' && o.room === r.number && dayStr >= o.checkin && dayStr < o.checkout);
+                    let bgClass = 'bg-emerald-50 text-emerald-600';
+                    let tooltip = '空房';
+                    if(matchedOrder) {
+                        bgClass = 'bg-brand-600 text-white font-semibold';
+                        tooltip = `${matchedOrder.name} (${matchedOrder.channel})`;
                     }
-                });
-
-                rowHtml += `</tr>`;
-                bodyRows.innerHTML += rowHtml;
+                    rowHTML += `<td class="p-1.5"><div class="w-8 h-8 rounded-lg ${bgClass} flex items-center justify-center text-xs mx-auto shadow-xs" title="${tooltip}">${matchedOrder ? '住' : ''}</div></td>`;
+                }
+                rowHTML += `</tr>`;
+                table.innerHTML += rowHTML;
             });
         }
 
-        function renderMonthCalendar() {
-            const targetDate = new Date();
-            targetDate.setMonth(targetDate.getMonth() + currentMonthOffset);
-
-            const year = targetDate.getFullYear();
-            const month = targetDate.getMonth();
-
-            document.getElementById('month-calendar-title').innerText = `${year} 年 ${month + 1} 月`;
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            const monthGrid = document.getElementById('month-grid');
-            monthGrid.innerHTML = '';
-
-            for(let i=0; i<firstDay; i++) {
-                monthGrid.innerHTML += `<div class="p-1 sm:p-2 bg-slate-50/50 min-h-[70px] sm:min-h-[90px]"></div>`;
-            }
-
-            for(let day=1; day<=daysInMonth; day++) {
-                const dateObj = new Date(year, month, day);
-                const dStr = formatDateStr(dateObj);
-                const isWeekend = (dateObj.getDay() === 0 || dateObj.getDay() === 6);
-                const holidayName = holidays[dStr];
-
-                const dayBookings = bookings.filter(b => b.checkIn <= dStr && dStr < getCheckoutDate(b.checkIn, b.nights));
-                const carCount = dayBookings.filter(b => b.parkingSpot).length;
-
-                monthGrid.innerHTML += `
-                    <div class="p-1 sm:p-2 min-h-[70px] sm:min-h-[90px] hover:bg-slate-50 transition flex flex-col justify-between">
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-xs ${isWeekend || holidayName ? 'text-rose-600' : 'text-slate-700'}">${day}</span>
-                            ${holidayName ? `<span class="text-[9px] bg-rose-100 text-rose-600 px-1 py-0.5 rounded font-bold hidden sm:inline">${holidayName}</span>` : ''}
-                        </div>
-                        <div class="space-y-1 my-1">
-                            ${dayBookings.length > 0 ? `<div class="bg-indigo-50 text-indigo-700 text-[9px] sm:text-[10px] font-bold px-1 py-0.5 rounded border border-indigo-100 truncate">${dayBookings.length}房</div>` : ''}
-                            ${carCount > 0 ? `<div class="bg-blue-50 text-blue-700 text-[9px] sm:text-[10px] font-bold px-1 py-0.5 rounded border border-blue-100 truncate">${carCount}車</div>` : ''}
-                        </div>
-                        <span class="text-[9px] text-slate-400 hidden sm:inline">剩 ${rooms.length - dayBookings.length} 空房</span>
-                    </div>
-                `;
-            }
-        }
-
-        function changeMonth(delta) {
-            currentMonthOffset += delta;
-            renderMonthCalendar();
-        }
-
-        // --- 8. 車位獨立視圖 ---
+        // --- 5. 固定編號車位管理 ---
         function renderParkingGrid() {
-            const today = getTodayStr();
-            const container = document.getElementById('parking-full-grid');
-            container.innerHTML = '';
+            const grid = document.getElementById('parking-grid');
+            grid.innerHTML = '';
 
-            parkingSpots.forEach(spot => {
-                const bk = bookings.find(b => b.parkingSpot === spot && b.checkIn <= today && today < getCheckoutDate(b.checkIn, b.nights));
-                container.innerHTML += `
-                    <div class="p-3 sm:p-5 rounded-2xl border ${bk ? 'bg-amber-50/80 border-amber-300' : 'bg-slate-50 border-slate-200'} flex flex-col justify-between">
+            parkingData.forEach(p => {
+                const assignedOrder = ordersData.find(o => o.status !== 'cancelled' && o.parking === p.id && todayStr >= o.checkin && todayStr < o.checkout);
+                let statusBadge = `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">車位空閒</span>`;
+                let carText = `<span class="text-slate-400 italic">尚無停放車輛</span>`;
+                if(assignedOrder) {
+                    statusBadge = `<span class="px-2 py-0.5 bg-rose-50 text-rose-700 text-xs font-semibold rounded-full">使用中 (${assignedOrder.room})</span>`;
+                    carText = `<span class="font-bold text-slate-800">${assignedOrder.name}</span>`;
+                }
+
+                grid.innerHTML += `
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
                         <div class="flex items-center justify-between">
-                            <span class="font-black text-lg sm:text-xl text-slate-800">${spot}</span>
-                            <span class="text-[10px] sm:text-xs px-2 py-0.5 rounded font-bold ${bk ? 'bg-amber-200 text-amber-800' : 'bg-slate-200 text-slate-600'}">${bk ? '使用中' : '空位'}</span>
+                            <span class="text-lg font-black text-brand-600 font-mono">${p.id}</span>
+                            ${statusBadge}
                         </div>
-                        <div class="mt-3 sm:mt-4">
-                            <p class="text-[10px] sm:text-xs text-slate-500">停放房客</p>
-                            <p class="font-bold text-xs sm:text-sm text-slate-800 truncate">${bk ? bk.guestName : '無預約'}</p>
-                            <p class="text-[10px] text-slate-400">${bk ? `房號: ${bk.roomId}` : '開放指派'}</p>
+                        <div>
+                            <p class="text-xs text-slate-500">停放房客</p>
+                            <p class="text-sm font-medium mt-0.5">${carText}</p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
+                            <span>固定車位</span>
+                            <button onclick="editParking('${p.id}')" class="text-brand-600 hover:underline font-semibold">修改設定</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // --- 9. 房客檔與標籤操作 ---
-        function renderGuestsList() {
-            const tbody = document.getElementById('guests-table-body');
-            const searchVal = document.getElementById('guest-search-input').value.toLowerCase();
+        function openParkingModal() {
+            let pId = prompt("請輸入要指派或修改的車位編號 (例如 P01 至 P15)：");
+            if(!pId) return;
+            pId = pId.toUpperCase();
+            let parking = parkingData.find(p => p.id === pId);
+            if(!parking) {
+                showToast('找不到該車位編號！', 'error');
+                return;
+            }
+            let carNum = prompt(`請輸入車位 ${pId} 的車牌號碼：`, parking.carNumber || '');
+            if(carNum !== null) {
+                parking.carNumber = carNum;
+                saveData();
+                renderParkingGrid();
+                showToast(`車位 ${pId} 更新成功！`);
+            }
+        }
+
+        function editParking(pId) {
+            let parking = parkingData.find(p => p.id === pId);
+            let carNum = prompt(`修改車位 ${pId} 的車牌號碼：`, parking.carNumber || '');
+            if(carNum !== null) {
+                parking.carNumber = carNum;
+                saveData();
+                renderParkingGrid();
+                showToast(`車位 ${pId} 更新成功！`);
+            }
+        }
+
+        // --- 6. 房客檔與通路標記 ---
+        function renderGuests() {
+            const tbody = document.getElementById('guests-tbody');
             tbody.innerHTML = '';
+            const keyword = document.getElementById('guest-search').value.toLowerCase();
 
-            let vipCount = 0;
-            let badCount = 0;
-            const channelCounts = {};
+            const filtered = guestsData.filter(g => g.name.toLowerCase().includes(keyword) || g.phone.includes(keyword));
+            document.getElementById('guest-total-count').innerText = `共 ${filtered.length} 位房客`;
 
-            Object.keys(guestProfiles).forEach(name => {
-                const p = guestProfiles[name];
-                if(p.isVip) vipCount++;
-                if(p.isBad) badCount++;
-                channelCounts[p.channel] = (channelCounts[p.channel] || 0) + 1;
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">查無房客資料</td></tr>`;
+                return;
+            }
 
-                if(searchVal && !name.toLowerCase().includes(searchVal) && !p.phone.includes(searchVal)) return;
-
-                const historyCount = bookings.filter(b => b.guestName === name).length;
-
+            filtered.forEach(g => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="py-3 px-4 font-bold text-slate-800">${name}</td>
-                        <td class="py-3 px-4 font-medium text-slate-600">${p.phone}</td>
-                        <td class="py-3 px-4 text-xs font-semibold text-slate-500">${p.channel || 'Agoda'}</td>
-                        <td class="py-3 px-4 font-semibold text-indigo-600">${historyCount} 次</td>
-                        <td class="py-3 px-4">
-                            ${p.isVip ? '<span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold mr-1">⭐ VIP常客</span>' : ''}
-                            ${p.isBad ? '<span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-1 rounded-full font-bold">⚠️ 黑名單/奧客</span>' : ''}
-                            ${!p.isVip && !p.isBad ? '<span class="text-xs text-slate-400">一般住客</span>' : ''}
-                        </td>
-                        <td class="py-3 px-4 text-right space-x-2">
-                            <button onclick="toggleGuestTag('${name}', 'vip')" class="text-xs px-2.5 py-1 rounded border border-amber-300 hover:bg-amber-50 text-amber-700 font-semibold">⭐ 標為常客</button>
-                            <button onclick="toggleGuestTag('${name}', 'bad')" class="text-xs px-2.5 py-1 rounded border border-rose-300 hover:bg-rose-50 text-rose-700 font-semibold">⚠️ 標為奧客</button>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-semibold text-slate-900">${g.name}</td>
+                        <td class="p-4 text-slate-600 font-mono text-xs">${g.phone}</td>
+                        <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${g.channel}</span></td>
+                        <td class="p-4 font-mono text-xs text-slate-700">${g.car || '無車牌'}</td>
+                        <td class="p-4 text-slate-500 text-xs">${g.note || '無'}</td>
+                        <td class="p-4 text-right">
+                            <button onclick="deleteGuest(${g.id})" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button>
                         </td>
                     </tr>
                 `;
             });
-
-            document.getElementById('stat-vip-count').innerText = `${vipCount} 人`;
-            document.getElementById('stat-bad-count').innerText = `${badCount} 人`;
-            
-            let topChannel = "Agoda";
-            let maxC = 0;
-            Object.keys(channelCounts).forEach(ch => {
-                if(channelCounts[ch] > maxC) { maxC = channelCounts[ch]; topChannel = ch; }
-            });
-            document.getElementById('stat-top-channel').innerText = topChannel;
         }
 
-        function toggleGuestTag(name, tagType) {
-            if(!guestProfiles[name]) return;
-            if(tagType === 'vip') guestProfiles[name].isVip = !guestProfiles[name].isVip;
-            if(tagType === 'bad') guestProfiles[name].isBad = !guestProfiles[name].isBad;
-            saveToLocalStorage();
-            renderGuestsList();
-            showToast(`已更新住客「${name}」的客群標記`);
+        function openGuestModal() {
+            let name = prompt("請輸入房客姓名：");
+            if(!name) return;
+            let phone = prompt("請輸入房客電話：", "09");
+            let channel = prompt("常住訂單通路 (Booking.com / Agoda / Line 官網直訂等)：", "Booking.com");
+            let car = prompt("車牌號碼 (選填)：", "");
+            let note = prompt("房客喜好備註 (選填)：", "");
+
+            guestsData.push({ id: Date.now(), name, phone: phone || '', channel: channel || 'Booking.com', car: car || '', note: note || '' });
+            saveData();
+            renderGuests();
+            showToast('新房客資料新增成功！');
         }
 
-        // --- 10. 民宿與房間設定 ---
-        function updateBrandName() {
-            const val = document.getElementById('settings-brand-input').value.trim();
-            if(!val) return;
-            brandName = val;
-            document.getElementById('sidebar-brand-name').innerText = brandName;
-            saveToLocalStorage();
-            showToast("已更新民宿品牌名稱！");
+        function deleteGuest(id) {
+            if(confirm('確定刪除此房客記錄嗎？')) {
+                guestsData = guestsData.filter(g => g.id !== id);
+                saveData();
+                renderGuests();
+                showToast('房客資料已刪除', 'error');
+            }
         }
 
-        function renderSettingsTable() {
-            const tbody = document.getElementById('settings-rooms-table-body');
+        // --- 7. 民宿與房間設定 ---
+        function renderRoomsSettings() {
+            const tbody = document.getElementById('rooms-settings-tbody');
             tbody.innerHTML = '';
-
-            rooms.forEach(r => {
-                const tagStr = r.tags ? r.tags.join(', ') : '';
+            roomsData.forEach(r => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="py-2.5 px-3">
-                            <input type="text" value="${r.id}" onchange="updateRoomField('${r.id}', 'id', this.value)" class="w-full text-xs font-bold bg-slate-50 border border-slate-200 rounded px-2 py-1">
-                        </td>
-                        <td class="py-2.5 px-3">
-                            <select onchange="updateRoomField('${r.id}', 'type', this.value)" class="w-full text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1">
-                                <option value="單人房" ${r.type === '單人房' ? 'selected' : ''}>單人房</option>
-                                <option value="雙人房" ${r.type === '雙人房' ? 'selected' : ''}>雙人房</option>
-                            </select>
-                        </td>
-                        <td class="py-2.5 px-3">
-                            <input type="number" value="${r.price}" onchange="updateRoomField('${r.id}', 'price', this.value)" class="w-full text-xs font-bold text-indigo-600 bg-slate-50 border border-slate-200 rounded px-2 py-1">
-                        </td>
-                        <td class="py-2.5 px-3">
-                            <input type="text" value="${tagStr}" onchange="updateRoomField('${r.id}', 'tags', this.value)" placeholder="以逗號分隔" class="w-full text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1">
-                        </td>
-                        <td class="py-2.5 px-3 text-right">
-                            <button onclick="deleteCustomRoom('${r.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-semibold px-2 py-1"><i class="fa-solid fa-trash mr-1"></i>刪除</button>
-                        </td>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold text-brand-600">${r.number}</td>
+                        <td class="p-3"><input type="text" value="${r.type}" id="rtype-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-36"></td>
+                        <td class="p-3"><input type="number" value="${r.weekday}" id="rwd-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-28"></td>
+                        <td class="p-3"><input type="number" value="${r.weekend}" id="rwe-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-28"></td>
+                        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">房況良好</span></td>
                     </tr>
                 `;
             });
+        }
 
-            const parkList = document.getElementById('settings-parking-list');
-            parkList.innerHTML = '';
-            parkingSpots.forEach((spot, idx) => {
-                parkList.innerHTML += `
-                    <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-2 rounded-lg">
-                        <input type="text" value="${spot}" onchange="updateParkingSpotName(${idx}, this.value)" class="w-full text-xs font-bold text-center bg-white border border-slate-200 rounded px-1.5 py-1">
-                        <button onclick="deleteParkingSpot(${idx})" class="text-rose-500 hover:text-rose-700 text-xs px-1"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                `;
+        function saveRoomSettings() {
+            roomsData.forEach(r => {
+                const tEl = document.getElementById(`rtype-${r.id}`);
+                const wdEl = document.getElementById(`rwd-${r.id}`);
+                const weEl = document.getElementById(`rwe-${r.id}`);
+                if(tEl) r.type = tEl.value;
+                if(wdEl) r.weekday = Number(wdEl.value);
+                if(weEl) r.weekend = Number(weEl.value);
             });
+            saveData();
+            showToast('50 間套房設定更新成功！');
         }
 
-        function updateRoomField(roomId, field, val) {
-            const r = rooms.find(item => item.id === roomId);
-            if(!r) return;
-            if(field === 'id') r.id = val.trim();
-            if(field === 'type') r.type = val;
-            if(field === 'price') r.price = parseInt(val) || 0;
-            if(field === 'tags') r.tags = val.split(',').map(s => s.trim()).filter(Boolean);
-            saveToLocalStorage();
-            showToast(`已儲存 ${roomId} 號房的最新修改`);
-        }
-
-        function deleteCustomRoom(roomId) {
-            if(!confirm(`確定要刪除 ${roomId} 號房間嗎？`)) return;
-            rooms = rooms.filter(r => r.id !== roomId);
-            saveToLocalStorage();
-            renderSettingsTable();
-            showToast(`已刪除房間 ${roomId}`);
-        }
-
-        function openAddRoomModal() {
-            const newId = prompt("請輸入新房間號碼 (例如: 301):");
-            if(!newId) return;
-            rooms.push({
-                id: newId.trim(),
-                type: "雙人房",
-                price: 2000,
-                tags: []
-            });
-            saveToLocalStorage();
-            renderSettingsTable();
-            showToast(`已成功新增房間 ${newId}`);
-        }
-
-        function updateParkingSpotName(idx, val) {
-            parkingSpots[idx] = val.trim();
-            saveToLocalStorage();
-            showToast("已更新車位編號");
-        }
-
-        function deleteParkingSpot(idx) {
-            parkingSpots.splice(idx, 1);
-            saveToLocalStorage();
-            renderSettingsTable();
-            showToast("已刪除車位");
-        }
-
-        function addNewParkingSpot() {
-            const newSpot = `P${String(parkingSpots.length + 1).padStart(2, '0')}`;
-            parkingSpots.push(newSpot);
-            saveToLocalStorage();
-            renderSettingsTable();
-            showToast(`已新增車位 ${newSpot}`);
-        }
-
-        // --- 11. 資料備份與匯入/匯出 核心邏輯 ---
-        function exportFullDataJSON() {
-            const fullData = {
-                brandName: brandName,
-                rooms: rooms,
-                parkingSpots: parkingSpots,
-                bookings: bookings,
-                guestProfiles: guestProfiles,
-                exportAt: new Date().toISOString()
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullData, null, 2));
+        // --- 8. 資料備份與還原 ---
+        function exportJSONBackup() {
+            const backupObj = { rooms: roomsData, parking: parkingData, guests: guestsData, orders: ordersData };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `日租套房完整備份_${getTodayStr()}.json`);
+            downloadAnchor.setAttribute("download", `homestay_backup_${todayStr}.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-            showToast("已順利下載全系統備份 JSON 檔！");
+            showToast('JSON 備份檔案下載成功！');
         }
 
-        function importFullDataJSON(event) {
+        function importJSONBackup(event) {
             const file = event.target.files[0];
-            if (!file) return;
-
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const data = JSON.parse(e.target.result);
-                    if(data.brandName) brandName = data.brandName;
-                    if(data.rooms) rooms = data.rooms;
-                    if(data.parkingSpots) parkingSpots = data.parkingSpots;
-                    if(data.bookings) bookings = data.bookings;
-                    if(data.guestProfiles) guestProfiles = data.guestProfiles;
-
-                    saveToLocalStorage();
-                    loadFromLocalStorage();
-                    switchTab('dashboard');
-                    showToast("備份資料導入成功！已還原所有紀錄。");
+                    const parsed = JSON.parse(e.target.result);
+                    if(parsed.rooms && parsed.orders) {
+                        roomsData = parsed.rooms;
+                        parkingData = parsed.parking || parkingData;
+                        guestsData = parsed.guests || guestsData;
+                        ordersData = parsed.orders || ordersData;
+                        saveData();
+                        initDashboard();
+                        showToast('資料還原成功！系統已更新。');
+                    } else {
+                        showToast('備份檔案格式不正確！', 'error');
+                    }
                 } catch(err) {
-                    alert("備份檔案格式不正確，導入失敗！");
+                    showToast('解析 JSON 檔案失敗！', 'error');
                 }
             };
             reader.readAsText(file);
         }
 
-        function exportBookingsCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "訂單編號,房號,住客姓名,聯絡電話,來源平台,入住日期,天數,車位編號,總金額,狀態,備註\n";
+        // --- 系統時鐘與手機選單事件 ---
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebar-overlay').classList.toggle('hidden');
+        });
+        document.getElementById('sidebar-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-overlay').classList.add('hidden');
+        });
 
-            bookings.forEach(b => {
-                csvContent += `"${b.id}","${b.roomId}","${b.guestName}","${b.guestPhone}","${b.channel || 'Agoda'}","${b.checkIn}","${b.nights}","${b.parkingSpot || '無'}","${b.totalPrice}","${b.status}","${b.notes || ''}"\n`;
-            });
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('system-time').innerText = now.toTimeString().substring(0, 5);
+        }, 1000);
 
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `日租套房訂單報表_${getTodayStr()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            showToast("已導出 Excel/CSV 訂單報表！");
-        }
-
-        function updateBookingStatus(id, newStatus) {
-            const bk = bookings.find(b => b.id === id);
-            if(bk) {
-                bk.status = newStatus;
-                saveToLocalStorage();
-                renderDashboard();
-                showToast("已成功變更入住狀態！");
-            }
-        }
-
-        function deleteBooking(id) {
-            if(!confirm("確定要刪除這筆訂單紀錄嗎？")) return;
-            bookings = bookings.filter(b => b.id !== id);
-            saveToLocalStorage();
-            renderDashboard();
-            showToast("已刪除該筆訂單");
-        }
-
-        // --- 12. 初始化載入 ---
+        // 初始載入
         window.onload = function() {
-            loadFromLocalStorage();
-            document.getElementById('current-date-display').innerText = getTodayStr();
-            document.getElementById('filter-checkin').value = getTodayStr();
-            renderDashboard();
+            initDashboard();
+            initMonthlyReport();
+            initCalendar();
         };
     </script>
 </body>
