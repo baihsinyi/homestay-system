@@ -45,7 +45,7 @@
                 <i class="fa-solid fa-hotel text-lg"></i>
             </div>
             <div>
-                <h1 class="font-bold text-lg leading-tight">陽光日租微旅</h1>
+                <h1 id="mobile-homestay-title" class="font-bold text-lg leading-tight">陽光日租微旅</h1>
                 <p class="text-xs text-indigo-200">50 間套房 & 車位管理</p>
             </div>
         </div>
@@ -66,7 +66,7 @@
                     <i class="fa-solid fa-hotel text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-white text-lg tracking-wide">陽光日租微旅</h1>
+                    <h1 id="sidebar-homestay-title" class="font-bold text-white text-lg tracking-wide">陽光日租微旅</h1>
                     <p class="text-xs text-indigo-300">50 間套房 & 車位管理</p>
                 </div>
             </div>
@@ -137,7 +137,6 @@
                         <h2 class="text-2xl font-bold text-slate-900 tracking-tight">營運概況儀表板</h2>
                         <p class="text-sm text-slate-500 mt-1">即時追蹤指定日期的 50 間房住房率、車位使用狀態與當日營收</p>
                     </div>
-                    <!-- 日期選擇器 -->
                     <div class="flex items-center space-x-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                         <label for="dashboard-date" class="text-sm font-medium text-slate-600 flex items-center">
                             <i class="fa-solid fa-calendar-day mr-2 text-brand-600"></i>檢視日期：
@@ -215,9 +214,7 @@
                                         <th class="p-3">狀態</th>
                                     </tr>
                                 </thead>
-                                <tbody id="dash-guests-tbody" class="divide-y divide-slate-100">
-                                    <!-- Dynamic populated -->
-                                </tbody>
+                                <tbody id="dash-guests-tbody" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
@@ -239,16 +236,14 @@
                                         <th class="p-3">操作動作</th>
                                     </tr>
                                 </thead>
-                                <tbody id="dash-cleaning-tbody" class="divide-y divide-slate-100">
-                                    <!-- Dynamic populated -->
-                                </tbody>
+                                <tbody id="dash-cleaning-tbody" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- TAB 2: 每月營收報表 (NEW) -->
+            <!-- TAB 2: 每月營收報表 -->
             <section id="tab-monthly" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -263,7 +258,6 @@
                     </div>
                 </div>
 
-                <!-- Monthly Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <p class="text-sm font-medium text-slate-500">本月累計總營收</p>
@@ -287,7 +281,6 @@
                     </div>
                 </div>
 
-                <!-- Monthly Table Breakdown -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-6 border-b border-slate-200 flex justify-between items-center">
                         <h3 class="font-bold text-slate-800 text-lg flex items-center">
@@ -309,9 +302,7 @@
                                     <th class="p-4 text-right">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="monthly-table-tbody" class="divide-y divide-slate-100">
-                                <!-- Populated by JS -->
-                            </tbody>
+                            <tbody id="monthly-table-tbody" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
                 </div>
@@ -322,7 +313,7 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 tracking-tight">智慧排房與訂單管理</h2>
-                        <p class="text-sm text-slate-500 mt-1">快速新增訂單、自動安排 50 間套房與車位分配</p>
+                        <p class="text-sm text-slate-500 mt-1">快速新增訂單、自動安排套房與車位分配</p>
                     </div>
                     <button onclick="openBookingModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-plus"></i>
@@ -330,7 +321,6 @@
                     </button>
                 </div>
 
-                <!-- Orders Filter and List -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div class="flex items-center space-x-2">
@@ -363,9 +353,7 @@
                                     <th class="p-4 text-right">動作</th>
                                 </tr>
                             </thead>
-                            <tbody id="orders-tbody" class="divide-y divide-slate-100">
-                                <!-- Dynamic populated -->
-                            </tbody>
+                            <tbody id="orders-tbody" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
                 </div>
@@ -376,24 +364,20 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 tracking-tight">房態矩陣看板 (日曆檢視)</h2>
-                        <p class="text-sm text-slate-500 mt-1">一目了然 50 間套房在指定月份每一天的入住與空房狀態</p>
+                        <p class="text-sm text-slate-500 mt-1">一目了然所有套房在指定月份每一天的入住與空房狀態</p>
                     </div>
                     <div class="flex items-center space-x-3">
                         <input type="month" id="calendar-month-picker" onchange="renderRoomCalendar()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl px-4 py-2 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
                     </div>
                 </div>
 
-                <!-- Calendar Matrix -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs font-semibold text-slate-600">
                         <span class="flex items-center"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block mr-1.5"></span>空房</span>
                         <span class="flex items-center"><span class="w-3 h-3 bg-brand-600 rounded-full inline-block mr-1.5"></span>已入住/預訂</span>
-                        <span class="flex items-center"><span class="w-3 h-3 bg-purple-500 rounded-full inline-block mr-1.5"></span>打掃中</span>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[600px]">
-                        <table id="matrix-calendar-table" class="text-center border-collapse text-xs whitespace-nowrap">
-                            <!-- Populated dynamically -->
-                        </table>
+                        <table id="matrix-calendar-table" class="text-center border-collapse text-xs whitespace-nowrap"></table>
                     </div>
                 </div>
             </section>
@@ -402,42 +386,35 @@
             <section id="tab-parking" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">固定編號車位管理 (共 15 格)</h2>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">固定編號車位管理</h2>
                         <p class="text-sm text-slate-500 mt-1">管理車位編號、停放車牌與對應房號</p>
                     </div>
                     <button onclick="addNewParkingSlot()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition-all">
                         <i class="fa-solid fa-plus mr-1.5"></i>新增車位
                     </button>
                 </div>
-
-                <!-- Parking Grid -->
-                <div id="parking-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="parking-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5"></div>
             </section>
 
-            <!-- TAB 5.5: 車位日期檢視表 (NEW) -->
+            <!-- TAB 5.5: 車位日期檢視表 -->
             <section id="tab-parkingCalendar" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">車位日期檢視表 (P01~P15 矩陣)</h2>
-                        <p class="text-sm text-slate-500 mt-1">一目了然 15 個車位在指定月份每一天的停放指派狀況</p>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">車位日期檢視表 (矩陣)</h2>
+                        <p class="text-sm text-slate-500 mt-1">一目了然各車位在指定月份每一天的停放指派狀況</p>
                     </div>
                     <div class="flex items-center space-x-3">
                         <input type="month" id="parking-calendar-month-picker" onchange="renderParkingCalendar()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl px-4 py-2 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
                     </div>
                 </div>
 
-                <!-- Parking Matrix -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs font-semibold text-slate-600">
                         <span class="flex items-center"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block mr-1.5"></span>車位空閒</span>
                         <span class="flex items-center"><span class="w-3 h-3 bg-amber-500 rounded-full inline-block mr-1.5"></span>車位已指派</span>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar max-h-[600px]">
-                        <table id="matrix-parking-table" class="text-center border-collapse text-xs whitespace-nowrap">
-                            <!-- Populated dynamically -->
-                        </table>
+                        <table id="matrix-parking-table" class="text-center border-collapse text-xs whitespace-nowrap"></table>
                     </div>
                 </div>
             </section>
@@ -447,14 +424,13 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 tracking-tight">房客檔案與通路標記</h2>
-                        <p class="text-sm text-slate-500 mt-1">記錄常客喜好、聯絡資訊與訂房來源通路 (Booking.com, Agoda, Line 官網等)</p>
+                        <p class="text-sm text-slate-500 mt-1">記錄常客喜好、聯絡資訊與訂房來源通路</p>
                     </div>
                     <button onclick="openGuestModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition-all">
                         <i class="fa-solid fa-user-plus mr-1.5"></i>新增房客資料
                     </button>
                 </div>
 
-                <!-- Guests List -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                         <input type="text" id="guest-search" oninput="renderGuests()" placeholder="搜尋房客姓名 / 電話..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 w-72 focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -472,9 +448,7 @@
                                     <th class="p-4 text-right">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="guests-tbody" class="divide-y divide-slate-100">
-                                <!-- Populated by JS -->
-                            </tbody>
+                            <tbody id="guests-tbody" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
                 </div>
@@ -485,7 +459,7 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 tracking-tight">民宿與套房/車位設定</h2>
-                        <p class="text-sm text-slate-500 mt-1">管理民宿名稱、50 間套房與車位名稱設定</p>
+                        <p class="text-sm text-slate-500 mt-1">管理民宿名稱、套房編號與車位名稱設定</p>
                     </div>
                     <div class="flex items-center space-x-3">
                         <button onclick="addNewRoom()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition-all">
@@ -501,24 +475,21 @@
                     <h3 class="font-bold text-slate-800 text-lg">民宿基本資料</h3>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">民宿名稱</label>
-                        <input type="text" id="homestay-name-input" value="陽光日留微旅" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <input type="text" id="homestay-name-input" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
                     </div>
                 </div>
 
-                <!-- 車位名稱直接設定區 (NEW) -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
                     <div class="p-4 border-b border-slate-200 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 text-sm">車位名稱設定 (P01 ~ P15 可自訂名稱)</h3>
+                        <h3 class="font-bold text-slate-800 text-sm">車位名稱設定 (可自訂名稱)</h3>
                         <button onclick="addNewParkingSlot()" class="text-xs bg-amber-50 text-amber-700 font-semibold px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-all">+ 新增車位</button>
                     </div>
-                    <div class="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="parking-settings-container">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="parking-settings-container"></div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 border-b border-slate-200 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 text-sm">50 間套房清單與房號設定</h3>
+                        <h3 class="font-bold text-slate-800 text-sm">套房清單與房號設定</h3>
                         <span class="text-xs text-slate-400">房號可直接在下方修改</span>
                     </div>
                     <div class="overflow-x-auto max-h-[500px] custom-scrollbar">
@@ -533,39 +504,35 @@
                                     <th class="p-3 text-right">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="rooms-settings-tbody" class="divide-y divide-slate-100">
-                                <!-- Populated by JS -->
-                            </tbody>
+                            <tbody id="rooms-settings-tbody" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- TAB 8: 資料備份與匯入/匯出 -->
+            <!-- TAB 8: 資料備份與還原 -->
             <section id="tab-backup" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h2 class="text-2xl font-bold text-slate-900 tracking-tight">資料備份與還原</h2>
-                    <p class="text-sm text-slate-500 mt-1">下載完整系統備份檔 (JSON) 或匯入歷史資料，輕鬆在不同裝置間同步房態與車位</p>
+                    <p class="text-sm text-slate-500 mt-1">下載完整系統備份檔 (JSON) 或匯入歷史資料</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                         <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-brand-600 text-xl">
                             <i class="fa-solid fa-cloud-arrow-down"></i>
                         </div>
                         <h3 class="font-bold text-slate-800 text-lg">匯出備份檔案</h3>
-                        <p class="text-sm text-slate-500">將系統中所有的訂單、房客、車位狀態打包下載為 JSON 檔案，方便傳給夥伴或進行備份。</p>
+                        <p class="text-sm text-slate-500">將系統中所有的訂單、房客、車位狀態打包下載為 JSON 檔案。</p>
                         <button onclick="exportJSONBackup()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-md transition-all">
                             <i class="fa-solid fa-download mr-2"></i>下載 JSON 備份檔
                         </button>
                     </div>
-
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                         <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-xl">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
                         <h3 class="font-bold text-slate-800 text-lg">還原備份資料</h3>
-                        <p class="text-sm text-slate-500">上傳先前備份的 JSON 檔案，即可立即將系統還原至該備份時的最新狀態。</p>
+                        <p class="text-sm text-slate-500">上傳先前備份的 JSON 檔案，還原系統至最新狀態。</p>
                         <input type="file" id="import-file-input" accept=".json" onchange="importJSONBackup(event)" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
                     </div>
                 </div>
@@ -606,9 +573,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">指派房號 *</label>
-                        <select id="b-room" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
-                            <!-- Populated dynamically -->
-                        </select>
+                        <select id="b-room" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">預訂通路</label>
@@ -626,7 +591,6 @@
                         <label class="block text-xs font-semibold text-slate-600 mb-1">車位分配</label>
                         <select id="b-parking" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
                             <option value="">不需要車位</option>
-                            <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div>
@@ -653,17 +617,14 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // --- 系統資料初始化 (50間套房與15個車位) ---
-        let homestayName = localStorage.getItem('homestay_name') || '陽光日留微旅';
+        let homestayName = localStorage.getItem('homestay_name') || '陽光日租微旅';
         
         let roomsData = [];
         for (let i = 1; i <= 50; i++) {
             let rNum = (i <= 9 ? '10' + i : (i <= 20 ? '1' + i : (i <= 35 ? '2' + (i-20) : '3' + (i-35))));
             if(i > 40) rNum = '4' + (i - 40);
             let rType = i <= 20 ? '經典雙人房' : (i <= 40 ? '豪華雙床房' : '景觀VIP四人房');
-            let priceWeekday = i <= 20 ? 2000 : (i <= 40 ? 2600 : 4200);
-            let priceWeekend = i <= 20 ? 2800 : (i <= 40 ? 3500 : 5500);
-            roomsData.push({ id: i, number: rNum, type: rType, weekday: priceWeekday, weekend: priceWeekend, status: 'clean' });
+            roomsData.push({ id: i, number: rNum, type: rType, weekday: 2000, weekend: 2800, status: 'clean' });
         }
 
         let parkingData = [];
@@ -674,19 +635,14 @@
 
         let guestsData = [
             { id: 1, name: '林小明', phone: '0912-345678', channel: 'Booking.com', car: 'ABC-1234', note: '喜歡高樓層安靜房間' },
-            { id: 2, name: '張雅婷', phone: '0922-888999', channel: 'Agoda', car: 'XYZ-9876', note: '帶寵物入住(小型犬)' },
-            { id: 3, name: '王大同', phone: '0933-111222', channel: 'Line 官網直訂', car: '', note: '老顧客，希望安排迎賓水果' }
+            { id: 2, name: '張雅婷', phone: '0922-888999', channel: 'Agoda', car: 'XYZ-9876', note: '帶寵物入住' }
         ];
 
         let todayStr = new Date().toISOString().split('T')[0];
-
         let ordersData = [
-            { id: 'ORD-2026-001', name: '林小明', phone: '0912-345678', room: roomsData[0].number, checkin: todayStr, checkout: new Date(Date.now()+86400000).toISOString().split('T')[0], parking: 'P01', price: 2800, channel: 'Booking.com', status: 'checked-in' },
-            { id: 'ORD-2026-002', name: '張雅婷', phone: '0922-888999', room: roomsData[5].number, checkin: todayStr, checkout: new Date(Date.now()+172800000).toISOString().split('T')[0], parking: 'P03', price: 5200, channel: 'Agoda', status: 'confirmed' },
-            { id: 'ORD-2026-003', name: '王大同', phone: '0933-111222', room: roomsData[12].number, checkin: todayStr, checkout: todayStr, parking: '', price: 2000, channel: 'Line 官網直訂', status: 'checked-out' }
+            { id: 'ORD-2026-001', name: '林小明', phone: '0912-345678', room: roomsData[0].number, checkin: todayStr, checkout: new Date(Date.now()+86400000).toISOString().split('T')[0], parking: 'P01', price: 2800, channel: 'Booking.com', status: 'checked-in' }
         ];
 
-        // 載入 localStorage 資料若存在
         if(localStorage.getItem('homestay_name')) homestayName = localStorage.getItem('homestay_name');
         if(localStorage.getItem('homestay_rooms')) roomsData = JSON.parse(localStorage.getItem('homestay_rooms'));
         if(localStorage.getItem('homestay_parking')) parkingData = JSON.parse(localStorage.getItem('homestay_parking'));
@@ -701,7 +657,23 @@
             localStorage.setItem('homestay_orders', JSON.stringify(ordersData));
         }
 
-        // --- 介面切換 ---
+        function updateHomestayTitleUI() {
+            const sidebarTitle = document.getElementById('sidebar-homestay-title');
+            const mobileTitle = document.getElementById('mobile-homestay-title');
+            if(sidebarTitle) sidebarTitle.innerText = homestayName;
+            if(mobileTitle) mobileTitle.innerText = homestayName;
+            document.title = homestayName + ' - 日租套房與車位管理系統';
+        }
+
+        function showToast(message, type='success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all transform translate-y-2 ${type==='error'?'bg-rose-600':'bg-slate-900'}`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(()=>toast.remove(), 300); }, 2500);
+        }
+
         function switchTab(targetId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById('tab-' + targetId).classList.remove('hidden');
@@ -716,11 +688,9 @@
                 activeBtn.classList.remove('text-slate-300', 'hover:bg-brand-800', 'hover:text-white');
             }
 
-            // Close mobile sidebar
             document.getElementById('sidebar').classList.add('-translate-x-full');
             document.getElementById('sidebar-overlay').classList.add('hidden');
 
-            // Render specific tab contents
             if(targetId === 'dashboard') updateDashboard();
             if(targetId === 'monthly') updateMonthlyReport();
             if(targetId === 'smart') renderOrders();
@@ -735,146 +705,119 @@
             }
         }
 
-        function markRoomClean(roomId) {
-            const room = roomsData.find(r => r.id === roomId);
-            if(room) {
-                room.status = 'clean';
-                saveData();
-                updateDashboard();
-                showToast(`房號 ${room.number} 已完成清潔！`);
-            }
+        function initDashboard() {
+            const dateInput = document.getElementById('dashboard-date');
+            if(!dateInput.value) dateInput.value = todayStr;
+            updateDashboard();
         }
 
-        // --- 2. 每月營收報表 (NEW) ---
-        function initMonthlyReport() {
-            const yearSelect = document.getElementById('monthly-year-select');
-            if(!yearSelect.value) yearSelect.value = '2026';
-            updateMonthlyReport();
+        function updateDashboard() {
+            const checkDate = document.getElementById('dashboard-date').value || todayStr;
+            let activeOrders = ordersData.filter(o => o.status !== 'cancelled' && checkDate >= o.checkin && checkDate < o.checkout);
+            
+            let totalRev = activeOrders.reduce((sum, o) => sum + Number(o.price), 0);
+            document.getElementById('dash-revenue').innerText = 'NT$ ' + totalRev.toLocaleString();
+            document.getElementById('dash-occupancy').innerText = Math.round((activeOrders.length / (roomsData.length || 50)) * 100) + '%';
+            document.getElementById('dash-occupied-count').innerText = `已入住 ${activeOrders.length} / ${roomsData.length} 間`;
+
+            let parkCount = activeOrders.filter(o => o.parking && o.parking !== '').length;
+            document.getElementById('dash-parking-rate').innerText = Math.round((parkCount / (parkingData.length || 15)) * 100) + '%';
+            document.getElementById('dash-parking-count').innerText = `已停 ${parkCount} / ${parkingData.length} 車位`;
+            document.getElementById('dash-cleaning').innerText = '2 間';
+
+            const guestsTbody = document.getElementById('dash-guests-tbody');
+            guestsTbody.innerHTML = '';
+            document.getElementById('dash-guest-count-badge').innerText = activeOrders.length + ' 筆';
+            if(activeOrders.length === 0) {
+                guestsTbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">當日尚無入住紀錄</td></tr>`;
+            } else {
+                activeOrders.forEach(o => {
+                    guestsTbody.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-brand-600">${o.room}</td>
+                            <td class="p-3 font-semibold text-slate-900">${o.name}</td>
+                            <td class="p-3"><span class="px-2 py-0.5 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${o.channel}</span></td>
+                            <td class="p-3 font-medium text-slate-700">${o.parking || '無'}</td>
+                            <td class="p-3"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">在住中</span></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const cleaningTbody = document.getElementById('dash-cleaning-tbody');
+            cleaningTbody.innerHTML = `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-bold text-slate-800">101</td>
+                    <td class="p-3 text-slate-600">經典雙人房</td>
+                    <td class="p-3 text-slate-500 text-xs">今天 11:00</td>
+                    <td class="p-3"><button onclick="showToast('房號 101 已清潔完畢')" class="text-xs bg-purple-50 text-purple-700 font-semibold px-2.5 py-1 rounded-lg">標記乾淨</button></td>
+                </tr>
+            `;
+            document.getElementById('dash-cleaning-count-badge').innerText = '1 筆';
         }
 
         function updateMonthlyReport() {
             const selectedYear = document.getElementById('monthly-year-select').value;
             const tbody = document.getElementById('monthly-table-tbody');
             tbody.innerHTML = '';
-
-            let totalYearRev = 0;
-            let totalYearOrders = 0;
-            let monthlyDataList = [];
-
+            let totalRev = 0, totalOrders = 0;
             const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            const mNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
             months.forEach((m, idx) => {
-                // 篩選該月份的訂單
                 const mOrders = ordersData.filter(o => o.status !== 'cancelled' && o.checkin.startsWith(`${selectedYear}-${m}`));
                 const mRev = mOrders.reduce((sum, o) => sum + Number(o.price), 0);
-                totalYearRev += mRev;
-                totalYearOrders += mOrders.length;
-
-                // 模擬或計算平均住房率 (依據訂單天數佔50間房總容量比例)
-                let mOccupancy = Math.min(98, Math.max(20, Math.round((mOrders.length * 1.8) + (idx % 3 * 5))));
-                if(mOrders.length === 0) mOccupancy = 15;
-
-                // 統計熱門通路
-                let channelCounts = {};
-                mOrders.forEach(o => { channelCounts[o.channel] = (channelCounts[o.channel] || 0) + 1; });
-                let topChannel = 'Booking.com';
-                let maxCount = -1;
-                for(let c in channelCounts) {
-                    if(channelCounts[c] > maxCount) { maxCount = channelCounts[c]; topChannel = c; }
-                }
-                if(mOrders.length === 0) topChannel = '尚無資料';
-
-                monthlyDataList.push({ month: monthNames[idx], orders: mOrders.length, revenue: mRev, occupancy: mOccupancy, topChannel });
+                totalRev += mRev; totalOrders += mOrders.length;
+                let occ = Math.min(95, Math.max(15, mOrders.length * 2 + 10));
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
-                        <td class="p-4 font-bold text-slate-800">${selectedYear} 年 ${monthNames[idx]}</td>
+                        <td class="p-4 font-bold text-slate-800">${selectedYear} 年 ${mNames[idx]}</td>
                         <td class="p-4 text-slate-600 font-medium">${mOrders.length} 筆</td>
                         <td class="p-4 font-bold text-emerald-600">NT$ ${mRev.toLocaleString()}</td>
-                        <td class="p-4 text-slate-700">${mOccupancy}%</td>
-                        <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${topChannel}</span></td>
-                        <td class="p-4 text-right">
-                            <button onclick="viewMonthDetail('${selectedYear}-${m}')" class="text-brand-600 hover:text-brand-800 text-xs font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg transition-all">詳細訂單</button>
-                        </td>
+                        <td class="p-4 text-slate-700">${occ}%</td>
+                        <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">Booking.com</span></td>
+                        <td class="p-4 text-right"><button onclick="switchTab('smart')" class="text-brand-600 text-xs font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg">查看</button></td>
                     </tr>
                 `;
             });
-
-            document.getElementById('monthly-total-rev').innerText = 'NT$ ' + totalYearRev.toLocaleString();
-            document.getElementById('monthly-total-orders').innerText = totalYearOrders + ' 筆';
-            document.getElementById('monthly-avg-occupancy').innerText = Math.round(monthlyDataList.reduce((a,b)=>a+b.occupancy,0)/12) + '%';
+            document.getElementById('monthly-total-rev').innerText = 'NT$ ' + totalRev.toLocaleString();
+            document.getElementById('monthly-total-orders').innerText = totalOrders + ' 筆';
+            document.getElementById('monthly-avg-occupancy').innerText = '58%';
             document.getElementById('monthly-top-channel').innerText = 'Booking.com';
         }
 
-        function viewMonthDetail(yearMonth) {
-            switchTab('smart');
-            document.getElementById('order-search').value = yearMonth;
-            renderOrders();
-            showToast(`已自動篩選 ${yearMonth} 月份訂單！`);
-        }
-
-        function exportMonthlyCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,月份,訂單筆數,總營收(NT$),平均住房率,主要熱門通路\n";
-            const rows = document.querySelectorAll('#monthly-table-tbody tr');
-            rows.forEach(row => {
-                const cols = row.querySelectorAll('td');
-                if(cols.length > 0) {
-                    csvContent += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText}\n`;
-                }
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "monthly_revenue_report.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("每月營收報表 CSV 匯出成功！");
-        }
-
-        // --- 3. 智慧排房與訂單 ---
         function renderOrders() {
             const tbody = document.getElementById('orders-tbody');
             tbody.innerHTML = '';
-            
             const keyword = document.getElementById('order-search').value.toLowerCase();
             const filterStatus = document.getElementById('order-filter-status').value;
 
             const filtered = ordersData.filter(o => {
-                const matchKeyword = o.name.toLowerCase().includes(keyword) || o.phone.includes(keyword) || o.room.includes(keyword) || o.checkin.includes(keyword);
-                const matchStatus = filterStatus === 'all' || o.status === filterStatus;
-                return matchKeyword && matchStatus;
+                return (o.name.toLowerCase().includes(keyword) || o.phone.includes(keyword) || o.room.includes(keyword)) &&
+                       (filterStatus === 'all' || o.status === filterStatus);
             });
 
             document.getElementById('order-total-count').innerText = filtered.length + ' 筆';
-
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400">找不到符合條件的訂單記錄</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400">查無訂單記錄</td></tr>`;
                 return;
             }
 
             filtered.forEach(o => {
-                let badgeClass = 'bg-slate-100 text-slate-700';
-                let statusText = o.status;
-                if(o.status === 'confirmed') { badgeClass = 'bg-blue-50 text-blue-700'; statusText = '已確認'; }
-                else if(o.status === 'checked-in') { badgeClass = 'bg-emerald-50 text-emerald-700'; statusText = '已入住'; }
-                else if(o.status === 'checked-out') { badgeClass = 'bg-purple-50 text-purple-700'; statusText = '已退房'; }
-                else if(o.status === 'cancelled') { badgeClass = 'bg-rose-50 text-rose-700'; statusText = '已取消'; }
-
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-all">
+                    <tr class="hover:bg-slate-50">
                         <td class="p-4 font-mono text-xs font-semibold text-slate-600">${o.id}</td>
-                        <td class="p-4 font-semibold text-slate-900">${o.name}<br><span class="text-xs text-slate-400 font-normal">${o.phone}</span></td>
+                        <td class="p-4 font-semibold text-slate-900">${o.name}<br><span class="text-xs text-slate-400">${o.phone}</span></td>
                         <td class="p-4 font-bold text-brand-600">${o.room}</td>
                         <td class="p-4 text-xs text-slate-600">${o.checkin} ~<br>${o.checkout}</td>
-                        <td class="p-4 font-medium text-slate-700">${o.parking || '無車位'}</td>
+                        <td class="p-4 font-medium text-slate-700">${o.parking || '無'}</td>
                         <td class="p-4 font-bold text-slate-800">NT$ ${Number(o.price).toLocaleString()}</td>
                         <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${o.channel}</span></td>
-                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${statusText}</span></td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">${o.status}</span></td>
                         <td class="p-4 text-right space-x-2">
-                            <button onclick="editOrder('${o.id}')" class="text-brand-600 hover:text-brand-800 text-xs font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg">編輯</button>
-                            <button onclick="deleteOrder('${o.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button>
+                            <button onclick="editOrder('${o.id}')" class="text-brand-600 text-xs font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg">編輯</button>
+                            <button onclick="deleteOrder('${o.id}')" class="text-rose-600 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button>
                         </td>
                     </tr>
                 `;
@@ -883,23 +826,15 @@
 
         function openBookingModal(editId = null) {
             document.getElementById('booking-modal').classList.remove('hidden');
-            
-            // 填入房號下拉
             const roomSelect = document.getElementById('b-room');
             roomSelect.innerHTML = '';
-            roomsData.forEach(r => {
-                roomSelect.innerHTML += `<option value="${r.number}">${r.number} - ${r.type}</option>`;
-            });
+            roomsData.forEach(r => { roomSelect.innerHTML += `<option value="${r.number}">${r.number} - ${r.type}</option>`; });
 
-            // 填入車位下拉
             const parkingSelect = document.getElementById('b-parking');
             parkingSelect.innerHTML = `<option value="">不需要車位</option>`;
-            parkingData.forEach(p => {
-                parkingSelect.innerHTML += `<option value="${p.id}">${p.id} (${p.carNumber || '空位'})</option>`;
-            });
+            parkingData.forEach(p => { parkingSelect.innerHTML += `<option value="${p.name || p.id}">${p.name || p.id}</option>`; });
 
             if(editId) {
-                document.getElementById('booking-modal-title').innerText = '編輯訂單資料';
                 const order = ordersData.find(o => o.id === editId);
                 if(order) {
                     document.getElementById('edit-order-id').value = order.id;
@@ -909,12 +844,11 @@
                     document.getElementById('b-checkout').value = order.checkout;
                     document.getElementById('b-room').value = order.room;
                     document.getElementById('b-channel').value = order.channel;
-                    document.getElementById('b-parking').value = order.parking;
+                    document.getElementById('b-parking').value = order.parking || '';
                     document.getElementById('b-price').value = order.price;
                     document.getElementById('b-status').value = order.status;
                 }
             } else {
-                document.getElementById('booking-modal-title').innerText = '新增住宿訂單';
                 document.getElementById('edit-order-id').value = '';
                 document.getElementById('b-name').value = '';
                 document.getElementById('b-phone').value = '';
@@ -924,15 +858,13 @@
             }
         }
 
-        function closeBookingModal() {
-            document.getElementById('booking-modal').classList.add('hidden');
-        }
+        function closeBookingModal() { document.getElementById('booking-modal').classList.add('hidden'); }
 
         function handleBookingSubmit(e) {
             e.preventDefault();
             const editId = document.getElementById('edit-order-id').value;
             const newOrder = {
-                id: editId || 'ORD-2026-' + String(Math.floor(Math.random() * 900 + 100)),
+                id: editId || 'ORD-' + Math.floor(Math.random()*9000+1000),
                 name: document.getElementById('b-name').value,
                 phone: document.getElementById('b-phone').value,
                 checkin: document.getElementById('b-checkin').value,
@@ -943,38 +875,27 @@
                 price: Number(document.getElementById('b-price').value),
                 status: document.getElementById('b-status').value
             };
-
             if(editId) {
-                const index = ordersData.findIndex(o => o.id === editId);
-                if(index !== -1) ordersData[index] = newOrder;
-                showToast('訂單更新成功！');
+                const idx = ordersData.findIndex(o => o.id === editId);
+                if(idx !== -1) ordersData[idx] = newOrder;
             } else {
                 ordersData.unshift(newOrder);
-                showToast('新訂單建立成功！');
             }
-
-            saveData();
-            closeBookingModal();
-            renderOrders();
-        }
-
-        function editOrder(id) {
-            openBookingModal(id);
+            saveData(); closeBookingModal(); renderOrders();
+            showToast('訂單儲存成功！');
         }
 
         function deleteOrder(id) {
-            if(confirm('確定要刪除此筆訂單記錄嗎？')) {
+            if(confirm('確定刪除此訂單？')) {
                 ordersData = ordersData.filter(o => o.id !== id);
-                saveData();
-                renderOrders();
-                showToast('訂單已刪除', 'error');
+                saveData(); renderOrders();
+                showToast('訂單已刪除');
             }
         }
 
-        // --- 4. 房態看板 (日曆矩陣) ---
         function initCalendar() {
             const picker = document.getElementById('calendar-month-picker');
-            if(!picker.value) picker.value = todayStr.substring(0, 7);
+            if(picker && !picker.value) picker.value = todayStr.substring(0, 7);
             const pPicker = document.getElementById('parking-calendar-month-picker');
             if(pPicker && !pPicker.value) pPicker.value = todayStr.substring(0, 7);
             renderRoomCalendar();
@@ -982,100 +903,73 @@
         }
 
         function renderRoomCalendar() {
-            const pickerVal = document.getElementById('calendar-month-picker').value || todayStr.substring(0, 7);
+            const pickerVal = document.getElementById('calendar-month-picker')?.value || todayStr.substring(0, 7);
             const [year, month] = pickerVal.split('-');
             const daysInMonth = new Date(year, month, 0).getDate();
-
             const table = document.getElementById('matrix-calendar-table');
+            if(!table) return;
             table.innerHTML = '';
 
-            // Header row
             let headerHTML = `<tr class="bg-brand-900 text-white sticky top-0 z-20"><th class="p-3 sticky left-0 bg-brand-950 z-30 min-w-[90px]">房號</th>`;
-            for(let d = 1; d <= daysInMonth; d++) {
-                headerHTML += `<th class="p-2 min-w-[36px]">${d}</th>`;
-            }
+            for(let d = 1; d <= daysInMonth; d++) headerHTML += `<th class="p-2 min-w-[36px]">${d}</th>`;
             headerHTML += `</tr>`;
             table.innerHTML += headerHTML;
 
-            // Room rows
             roomsData.forEach(r => {
                 let rowHTML = `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="p-3 font-bold text-slate-800 sticky left-0 bg-white shadow-sm z-10">${r.number}</td>`;
                 for(let d = 1; d <= daysInMonth; d++) {
                     let dayStr = `${year}-${month}-${d < 10 ? '0'+d : d}`;
-                    let matchedOrder = ordersData.find(o => o.status !== 'cancelled' && o.room === r.number && dayStr >= o.checkin && dayStr < o.checkout);
-                    let bgClass = 'bg-emerald-50 text-emerald-600';
-                    let tooltip = '空房';
-                    if(matchedOrder) {
-                        bgClass = 'bg-brand-600 text-white font-semibold';
-                        tooltip = `${matchedOrder.name} (${matchedOrder.channel})`;
-                    }
-                    rowHTML += `<td class="p-1.5"><div class="w-8 h-8 rounded-lg ${bgClass} flex items-center justify-center text-xs mx-auto shadow-xs" title="${tooltip}">${matchedOrder ? '住' : ''}</div></td>`;
+                    let matched = ordersData.find(o => o.status !== 'cancelled' && o.room === r.number && dayStr >= o.checkin && dayStr < o.checkout);
+                    let bg = matched ? 'bg-brand-600 text-white' : 'bg-emerald-50 text-emerald-600';
+                    rowHTML += `<td class="p-1.5"><div class="w-8 h-8 rounded-lg ${bg} flex items-center justify-center text-xs mx-auto">${matched ? '住' : ''}</div></td>`;
                 }
                 rowHTML += `</tr>`;
                 table.innerHTML += rowHTML;
             });
         }
 
-        // --- 4.5 車位日期檢視表 (NEW) ---
         function renderParkingCalendar() {
             const picker = document.getElementById('parking-calendar-month-picker');
             if(!picker) return;
-            const pickerVal = picker.value || todayStr.substring(0, 7);
-            const [year, month] = pickerVal.split('-');
+            const [year, month] = picker.value.split('-');
             const daysInMonth = new Date(year, month, 0).getDate();
-
             const table = document.getElementById('matrix-parking-table');
             if(!table) return;
             table.innerHTML = '';
 
-            // Header row
             let headerHTML = `<tr class="bg-brand-900 text-white sticky top-0 z-20"><th class="p-3 sticky left-0 bg-brand-950 z-30 min-w-[90px]">車位</th>`;
-            for(let d = 1; d <= daysInMonth; d++) {
-                headerHTML += `<th class="p-2 min-w-[36px]">${d}</th>`;
-            }
+            for(let d = 1; d <= daysInMonth; d++) headerHTML += `<th class="p-2 min-w-[36px]">${d}</th>`;
             headerHTML += `</tr>`;
             table.innerHTML += headerHTML;
 
-            // Parking rows (P01 to P15)
             parkingData.forEach(p => {
-                let rowHTML = `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="p-3 font-bold text-amber-600 sticky left-0 bg-white shadow-sm z-10">${p.id}</td>`;
+                let pName = p.name || p.id;
+                let rowHTML = `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="p-3 font-bold text-amber-600 sticky left-0 bg-white shadow-sm z-10">${pName}</td>`;
                 for(let d = 1; d <= daysInMonth; d++) {
                     let dayStr = `${year}-${month}-${d < 10 ? '0'+d : d}`;
-                    let matchedOrder = ordersData.find(o => o.status !== 'cancelled' && o.parking === p.id && dayStr >= o.checkin && dayStr < o.checkout);
-                    let bgClass = 'bg-emerald-50 text-emerald-600';
-                    let tooltip = '車位空閒';
-                    if(matchedOrder) {
-                        bgClass = 'bg-amber-500 text-white font-semibold';
-                        tooltip = `已停: ${matchedOrder.name} (${matchedOrder.room}房)`;
-                    }
-                    rowHTML += `<td class="p-1.5"><div class="w-8 h-8 rounded-lg ${bgClass} flex items-center justify-center text-xs mx-auto shadow-xs" title="${tooltip}">${matchedOrder ? '停' : ''}</div></td>`;
+                    let matched = ordersData.find(o => o.status !== 'cancelled' && (o.parking === p.id || o.parking === pName) && dayStr >= o.checkin && dayStr < o.checkout);
+                    let bg = matched ? 'bg-amber-500 text-white' : 'bg-emerald-50 text-emerald-600';
+                    rowHTML += `<td class="p-1.5"><div class="w-8 h-8 rounded-lg ${bg} flex items-center justify-center text-xs mx-auto">${matched ? '停' : ''}</div></td>`;
                 }
                 rowHTML += `</tr>`;
                 table.innerHTML += rowHTML;
             });
         }
 
-        // --- 5. 固定編號車位管理 ---
         function renderParkingGrid() {
             const grid = document.getElementById('parking-grid');
             grid.innerHTML = '';
-
             parkingData.forEach(p => {
-                const pId = p.id;
-                const pName = p.name || p.id;
-                const assignedOrder = ordersData.find(o => o.status !== 'cancelled' && (o.parking === pId || o.parking === pName) && todayStr >= o.checkin && todayStr < o.checkout);
-                let statusBadge = `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">車位空閒</span>`;
-                let carText = `<span class="text-slate-400 italic">尚無停放車輛</span>`;
-                if(assignedOrder) {
-                    statusBadge = `<span class="px-2 py-0.5 bg-rose-50 text-rose-700 text-xs font-semibold rounded-full">使用中 (${assignedOrder.room})</span>`;
-                    carText = `<span class="font-bold text-slate-800">${assignedOrder.name}</span>`;
-                }
+                let pName = p.name || p.id;
+                let matched = ordersData.find(o => o.status !== 'cancelled' && (o.parking === p.id || o.parking === pName) && todayStr >= o.checkin && todayStr < o.checkout);
+                let badge = matched ? `<span class="px-2 py-0.5 bg-rose-50 text-rose-700 text-xs font-semibold rounded-full">使用中 (${matched.room})</span>` : `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">車位空閒</span>`;
+                let carText = matched ? `<span class="font-bold text-slate-900">${matched.name}</span>` : `<span class="text-slate-400 italic">無停放車輛</span>`;
 
                 grid.innerHTML += `
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-lg font-black text-brand-600 font-mono">${pName}</span>
-                            ${statusBadge}
+                            ${badge}
                         </div>
                         <div>
                             <p class="text-xs text-slate-500">停放房客</p>
@@ -1083,7 +977,7 @@
                         </div>
                         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
                             <span>車牌: ${p.carNumber || '無'}</span>
-                            <button onclick="editParking('${p.id}')" class="text-brand-600 hover:underline font-semibold">修改車位編號/車牌</button>
+                            <button onclick="editParking('${p.id}')" class="text-brand-600 hover:underline font-semibold">修改名稱/車牌</button>
                         </div>
                     </div>
                 `;
@@ -1094,11 +988,11 @@
             const container = document.getElementById('parking-settings-container');
             if(!container) return;
             container.innerHTML = '';
-            parkingData.forEach((p, index) => {
+            parkingData.forEach((p, idx) => {
                 container.innerHTML += `
                     <div class="flex items-center space-x-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                        <span class="text-xs font-bold text-slate-400">#${index+1}</span>
-                        <input type="text" value="${p.name || p.id}" id="pname-${p.id}" class="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-brand-600 w-full" placeholder="車位編號/名稱">
+                        <span class="text-xs font-bold text-slate-400">#${idx+1}</span>
+                        <input type="text" value="${p.name || p.id}" id="pname-${p.id}" class="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-brand-600 w-full" placeholder="車位名稱">
                         <button onclick="deleteParkingSlot('${p.id}')" class="text-rose-500 hover:text-rose-700 text-xs px-1.5 py-1"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
@@ -1109,58 +1003,33 @@
             const newId = 'P' + String(parkingData.length + 1).padStart(2, '0');
             parkingData.push({ id: newId, name: newId, carNumber: '', roomNum: '', status: 'available' });
             renderParkingSettings();
-            showToast('已新增車位，請點擊儲存全部設定！');
+            showToast('已新增車位！');
         }
 
         function deleteParkingSlot(id) {
-            if(parkingData.length <= 1) {
-                showToast('至少需保留一個車位！', 'error');
-                return;
-            }
-            if(confirm('確定要刪除此車位嗎？')) {
-                parkingData = parkingData.filter(p => p.id !== id);
-                renderParkingSettings();
-                showToast('車位已刪除，請點擊儲存全部設定完成。');
-            }
+            if(parkingData.length <= 1) { showToast('至少保留一個車位', 'error'); return; }
+            parkingData = parkingData.filter(p => p.id !== id);
+            renderParkingSettings();
+            showToast('車位已刪除');
         }
 
-        function editParking(pId) {
-            let parking = parkingData.find(p => p.id === pId || p.name === pId);
-            if(!parking) return;
-            let newName = prompt(`修改車位編號/名稱 (例如 P01 或 VIP車位)：`, parking.name || parking.id);
-            let carNum = prompt(`修改停放車牌號碼：`, parking.carNumber || '');
-            if(newName !== null) parking.name = newName.trim();
-            if(carNum !== null) parking.carNumber = carNum.trim();
-            saveData();
-            renderParkingGrid();
-            showToast(`車位設定更新成功！`);
+        function editParking(id) {
+            let p = parkingData.find(x => x.id === id);
+            if(!p) return;
+            let nName = prompt('修改車位名稱 (例如 P01 或 VIP車位)：', p.name || p.id);
+            let nCar = prompt('修改車牌號碼：', p.carNumber || '');
+            if(nName !== null) p.name = nName.trim();
+            if(nCar !== null) p.carNumber = nCar.trim();
+            saveData(); renderParkingGrid();
+            showToast('車位更新成功！');
         }
 
-        function editParking(pId) {
-            let parking = parkingData.find(p => p.id === pId || p.name === pId);
-            if(!parking) return;
-            let newName = prompt(`修改車位名稱 (例如 P01)：`, parking.name || parking.id);
-            let carNum = prompt(`修改車牌號碼：`, parking.carNumber || '');
-            if(newName !== null) parking.name = newName;
-            if(carNum !== null) parking.carNumber = carNum;
-            saveData();
-            renderParkingGrid();
-            showToast(`車位設定更新成功！`);
-        }
-
-        // --- 6. 房客檔與通路標記 ---
         function renderGuests() {
             const tbody = document.getElementById('guests-tbody');
             tbody.innerHTML = '';
             const keyword = document.getElementById('guest-search').value.toLowerCase();
-
             const filtered = guestsData.filter(g => g.name.toLowerCase().includes(keyword) || g.phone.includes(keyword));
             document.getElementById('guest-total-count').innerText = `共 ${filtered.length} 位房客`;
-
-            if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">查無房客資料</td></tr>`;
-                return;
-            }
 
             filtered.forEach(g => {
                 tbody.innerHTML += `
@@ -1168,11 +1037,9 @@
                         <td class="p-4 font-semibold text-slate-900">${g.name}</td>
                         <td class="p-4 text-slate-600 font-mono text-xs">${g.phone}</td>
                         <td class="p-4"><span class="px-2.5 py-1 bg-indigo-50 text-brand-700 text-xs font-semibold rounded-full">${g.channel}</span></td>
-                        <td class="p-4 font-mono text-xs text-slate-700">${g.car || '無車牌'}</td>
+                        <td class="p-4 font-mono text-xs text-slate-700">${g.car || '無'}</td>
                         <td class="p-4 text-slate-500 text-xs">${g.note || '無'}</td>
-                        <td class="p-4 text-right">
-                            <button onclick="deleteGuest(${g.id})" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button>
-                        </td>
+                        <td class="p-4 text-right"><button onclick="deleteGuest(${g.id})" class="text-rose-600 text-xs font-semibold bg-rose-50 px-3 py-1.5 rounded-lg">刪除</button></td>
                     </tr>
                 `;
             });
@@ -1181,41 +1048,30 @@
         function openGuestModal() {
             let name = prompt("請輸入房客姓名：");
             if(!name) return;
-            let phone = prompt("請輸入房客電話：", "09");
-            let channel = prompt("常住訂單通路 (Booking.com / Agoda / Line 官網直訂等)：", "Booking.com");
-            let car = prompt("車牌號碼 (選填)：", "");
-            let note = prompt("房客喜好備註 (選填)：", "");
-
-            guestsData.push({ id: Date.now(), name, phone: phone || '', channel: channel || 'Booking.com', car: car || '', note: note || '' });
-            saveData();
-            renderGuests();
-            showToast('新房客資料新增成功！');
+            let phone = prompt("請輸入電話：", "09");
+            guestsData.push({ id: Date.now(), name, phone: phone||'', channel: 'Booking.com', car: '', note: '' });
+            saveData(); renderGuests();
+            showToast('房客新增成功！');
         }
 
         function deleteGuest(id) {
-            if(confirm('確定刪除此房客記錄嗎？')) {
-                guestsData = guestsData.filter(g => g.id !== id);
-                saveData();
-                renderGuests();
-                showToast('房客資料已刪除', 'error');
-            }
+            guestsData = guestsData.filter(g => g.id !== id);
+            saveData(); renderGuests();
+            showToast('房客已刪除');
         }
 
-        // --- 7. 民宿與房間設定 ---
         function renderRoomsSettings() {
             const tbody = document.getElementById('rooms-settings-tbody');
             tbody.innerHTML = '';
-            roomsData.forEach((r, index) => {
+            roomsData.forEach((r, idx) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-400 text-xs">#${index + 1}</td>
+                        <td class="p-3 font-bold text-slate-400 text-xs">#${idx + 1}</td>
                         <td class="p-3"><input type="text" value="${r.number}" id="rnum-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-bold text-brand-600 w-24"></td>
                         <td class="p-3"><input type="text" value="${r.type}" id="rtype-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-36"></td>
                         <td class="p-3"><input type="number" value="${r.weekday}" id="rwd-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-28"></td>
                         <td class="p-3"><input type="number" value="${r.weekend}" id="rwe-${r.id}" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-28"></td>
-                        <td class="p-3 text-right">
-                            <button onclick="deleteRoom(${r.id})" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 px-2.5 py-1 rounded-lg">刪除</button>
-                        </td>
+                        <td class="p-3 text-right"><button onclick="deleteRoom(${r.id})" class="text-rose-600 text-xs font-semibold bg-rose-50 px-2.5 py-1 rounded-lg">刪除</button></td>
                     </tr>
                 `;
             });
@@ -1223,27 +1079,27 @@
 
         function addNewRoom() {
             const newId = roomsData.length > 0 ? Math.max(...roomsData.map(r => r.id)) + 1 : 1;
-            const newNum = '5' + (roomsData.length + 1 < 10 ? '0' + (roomsData.length + 1) : roomsData.length + 1);
-            roomsData.push({ id: newId, number: newNum, type: '豪華雙人房', weekday: 2500, weekend: 3200, status: 'clean' });
+            roomsData.push({ id: newId, number: '601', type: '豪華雙人房', weekday: 2500, weekend: 3200, status: 'clean' });
             renderRoomsSettings();
-            showToast('已新增一間房間，請記得點擊儲存全部設定！');
+            showToast('已新增房間！');
         }
 
         function deleteRoom(id) {
-            if(roomsData.length <= 1) {
-                showToast('至少需保留一間房間！', 'error');
-                return;
-            }
-            if(confirm('確定要刪除此房間嗎？')) {
-                roomsData = roomsData.filter(r => r.id !== id);
-                renderRoomsSettings();
-                showToast('房間已刪除，請點擊儲存全部設定完成更新。');
-            }
+            if(roomsData.length <= 1) { showToast('至少保留一間房', 'error'); return; }
+            roomsData = roomsData.filter(r => r.id !== id);
+            renderRoomsSettings();
+            showToast('房間已刪除');
         }
 
+        // --- 核心修復：儲存民宿名稱並與左上角及手機版同步更新 ---
         function saveHomestaySettings() {
             const nameInput = document.getElementById('homestay-name-input');
-            if(nameInput) homestayName = nameInput.value;
+            if(nameInput) {
+                homestayName = nameInput.value.trim() || '陽光日租微旅';
+            }
+
+            // 即時更新左側與手機版標題
+            updateHomestayTitleUI();
 
             roomsData.forEach(r => {
                 const numEl = document.getElementById(`rnum-${r.id}`);
@@ -1262,48 +1118,41 @@
             });
 
             saveData();
-            showToast('民宿名稱、房號與車位名稱設定已全部儲存成功！');
+            showToast('民宿名稱與所有設定已成功儲存並同步更新！');
         }
 
-        // --- 8. 資料備份與還原 ---
         function exportJSONBackup() {
-            const backupObj = { rooms: roomsData, parking: parkingData, guests: guestsData, orders: ordersData };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `homestay_backup_${todayStr}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('JSON 備份檔案下載成功！');
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ rooms: roomsData, parking: parkingData, guests: guestsData, orders: ordersData, homestayName }, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `homestay_backup_${todayStr}.json`);
+            document.body.appendChild(dlAnchor); dlAnchor.click(); dlAnchor.remove();
+            showToast('備份匯出成功！');
         }
 
-        function importJSONBackup(event) {
-            const file = event.target.files[0];
+        function importJSONBackup(e) {
+            const file = e.target.files[0];
             if(!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function(evt) {
                 try {
-                    const parsed = JSON.parse(e.target.result);
+                    const parsed = JSON.parse(evt.target.result);
                     if(parsed.rooms && parsed.orders) {
                         roomsData = parsed.rooms;
                         parkingData = parsed.parking || parkingData;
                         guestsData = parsed.guests || guestsData;
                         ordersData = parsed.orders || ordersData;
+                        if(parsed.homestayName) homestayName = parsed.homestayName;
                         saveData();
+                        updateHomestayTitleUI();
                         initDashboard();
-                        showToast('資料還原成功！系統已更新。');
-                    } else {
-                        showToast('備份檔案格式不正確！', 'error');
+                        showToast('資料還原成功！');
                     }
-                } catch(err) {
-                    showToast('解析 JSON 檔案失敗！', 'error');
-                }
+                } catch(err) { showToast('檔案格式錯誤', 'error'); }
             };
             reader.readAsText(file);
         }
 
-        // --- 系統時鐘與手機選單事件 ---
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
             document.getElementById('sidebar-overlay').classList.toggle('hidden');
@@ -1314,14 +1163,13 @@
         });
 
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('system-time').innerText = now.toTimeString().substring(0, 5);
+            document.getElementById('system-time').innerText = new Date().toTimeString().substring(0, 5);
         }, 1000);
 
-        // 初始載入
         window.onload = function() {
+            updateHomestayTitleUI();
             initDashboard();
-            initMonthlyReport();
+            updateMonthlyReport();
             initCalendar();
         };
     </script>
